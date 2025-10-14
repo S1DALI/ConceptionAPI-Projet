@@ -1,112 +1,1142 @@
 openapi: 3.0.4
-
 info:
-  title: Swagger MyClasses - OpenAPI 3.0.4
-  description: TO DO
-  version: 1.0.12
-
+  title: MyClasses API
+  version: "1.0.0"
+  description: |
+    The MyClasses API is designed to give students centralized and seamless access to all their courses,
+    even when these are spread across multiple platforms and sources. With this API, students can easily
+    retrieve all relevant course information, while professors are equipped to efficiently manage and
+    update their course content. Administrators, meanwhile, have complete control over the API, with the
+    ability to manage all related resources and delete accounts.
+    In essence, the MyClasses API serves as a unified interface that simplifies both course management and
+    access, ensuring a better learning experience for students.
 servers:
-  - url: https://myclasses.swagger.io/api
+  - url: https://api.myclasses.example.com
+    description: Production server
+  - url: https://staging.api.myclasses.example.com
+    description: Staging server
 
 tags:
-  - name: degree
-    description: TO DO
-  - name: course
-    description: TO DO
-  - name: class
-    description: TO DO
-  - name: user
-    description: TO DO
+  - name: Degree
+    description: Endpoints related to degrees
+  - name: Course
+    description: Endpoints related to courses
+  - name: Class
+    description: Endpoints related to classes (sessions / resources)
+  - name: User
+    description: Endpoints related to user management and authentication
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Token JWT (use Authorization: Bearer &lt;token&gt;). Role-based access enforced per operation."
+  schemas:
+    Degree:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        name:
+          type: string
+      required:
+        - name
+      example:
+        id: 1
+        name: "Computer Science"
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        degreeId:
+          type: integer
+          format: int64
+          description: "Identifier of the degree this course belongs to"
+        name:
+          type: string
+      required:
+        - degreeId
+        - name
+      example:
+        id: 12
+        degreeId: 1
+        name: "Introduction to Algorithms"
+    Class:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        name:
+          type: string
+        link:
+          type: string
+          format: uri
+          description: "URL or resource link for the class session or resource"
+        courseId:
+          type: integer
+          format: int64
+          description: "Identifier of the course this class belongs to (optional)"
+      required:
+        - name
+        - link
+      example:
+        id: 101
+        name: "Lecture 1 — Big O Notation"
+        link: "https://meet.example.com/abc-defg"
+        courseId: 12
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          writeOnly: true
+          description: "Plain password on create; stored hashed on server"
+        role:
+          type: integer
+          format: int64
+          description: "Role (student 0, class-representative 1, teacher 2, admin 3)"
+      required:
+        - firstname
+        - lastname
+        - email
+        - password
+      example:
+        id: 7
+        firstname: "Alice"
+        lastname: "Smith"
+        email: "alice.smith@example.com"
+        role: 0
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+      example:
+        code: 400
+        message: "Bad Request"
+  parameters:
+    degreeId:
+      name: degreeId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: "Degree identifier"
+    courseId:
+      name: courseId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: "Course identifier"
+    classId:
+      name: classId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: "Class identifier"
+    userId:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: "User identifier"
 
 paths:
-  /degree/v1:
+  /degrees/v1:
     post:
       tags:
-        - degree
-      summary: Add a new degree
-      description: TO DO
+        - Degree
+      summary: Add a new degree.
+      security:
+        - bearerAuth: []
+      # Allowed roles: admin only
+      description: "Create a new degree. Security: Token JWT (admin only)."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+                - name
+            examples:
+              json-example:
+                summary: JSON example
+                value:
+                  name: "Computer Science"
+          application/xml:
+            schema:
+              type: object
+              xml:
+                name: Degree
+              properties:
+                name:
+                  type: string
+            examples:
+              xml-example:
+                summary: XML example
+                value: |
+                  <Degree>
+                    <name>Computer Science</name>
+                  </Degree>
       responses:
         "200":
-          description: TO DO
-
-  /degree/v1/{degreeName}:
-    put:
-      tags:
-        - degree
-      summary: Update the name of a degree
-      description: TO DO
-      responses:
-        "200":
-          description: TO DO
-    delete:
-      tags:
-        - degree
-      summary: Delete a degree
-      description: TO DO
-      responses:
-        "200":
-          description: TO DO
-
-  /course/v1/{degreeName}:
-    post:
-      tags:
-        - course
-      summary: Add a new course
-      description: TO DO
-      responses:
-        "200":
-          description: TO DO
-
-  /course/v1/{degreeName}/{courseName}:
-    put:
-      tags:
-        - course
-      summary: Update the name of a course
-      description: TO DO
-      responses:
-        "200":
-          description: TO DO
-    delete:
-      tags:
-        - course
-      summary: Delete a course
-      description: TO DO
-      responses:
-        "200":
-          description: TO DO
-
-  /class/v1/{degreeName}/{courseName}:
-    post:
-      tags:
-        - class
-      summary: Add a new class
-      description: TO DO
-      responses:
-        "200":
-          description: TO DO
-
-  /class/v1/{degreeName}/{courseName}/{className}:
+          description: Degree successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Degree"
+              examples:
+                success-json:
+                  value:
+                    id: 1
+                    name: "Computer Science"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Degree"
+              examples:
+                success-xml:
+                  value: |
+                    <Degree>
+                      <id>1</id>
+                      <name>Computer Science</name>
+                    </Degree>
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
     get:
       tags:
-        - class
-      summary: Find a class by name
-      description: TO DO
+        - Degree
+      summary: Get the list of degrees.
+      description: Retrieve all degrees.
       responses:
         "200":
-          description: TO DO
+          description: Successful retrieve of degrees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Degree"
+              examples:
+                json-example:
+                  value:
+                    - id: 1
+                      name: "Computer Science"
+                    - id: 2
+                      name: "Business Administration"
+
+  /degrees/v1/{degreeId}:
     put:
       tags:
-        - class
-      summary: Update a class
-      description: TO DO
+        - Degree
+      summary: Update the name of a degree.
+      parameters:
+        - $ref: "#/components/parameters/degreeId"
+      security:
+        - bearerAuth: []
+      description: "Update degree name. Security: Token JWT (admin only)."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+                - name
+            examples:
+              json-example:
+                value:
+                  name: "Computer Science and Engineering"
+          application/xml:
+            schema:
+              type: object
+              xml:
+                name: Degree
+              properties:
+                name:
+                  type: string
+            examples:
+              xml-example:
+                value: |
+                  <Degree>
+                    <name>Computer Science and Engineering</name>
+                  </Degree>
       responses:
         "200":
-          description: TO DO
+          description: Successful update of degree
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Degree"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Degree not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
     delete:
       tags:
-        - class
-      summary: Delete a class
-      description: TO DO
+        - Degree
+      summary: Delete a degree.
+      parameters:
+        - $ref: "#/components/parameters/degreeId"
+      security:
+        - bearerAuth: []
+      description: "Delete a degree. Security: Token JWT (admin only)."
       responses:
         "200":
-          description: TO DO
+          description: Degree successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "Degree successfully deleted"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Degree not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /degrees/{degreeId}/courses/v1:
+    get:
+      tags:
+        - Degree
+      summary: Get the list of courses of a degree.
+      parameters:
+        - $ref: "#/components/parameters/degreeId"
+      description: Retrieve courses for a specific degree.
+      responses:
+        "200":
+          description: Successful retrieve of courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Course"
+              examples:
+                json-example:
+                  value:
+                    - id: 12
+                      degreeId: 1
+                      name: "Introduction to Algorithms"
+                    - id: 13
+                      degreeId: 1
+                      name: "Data Structures"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Degree not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /courses/v1:
+    post:
+      tags:
+        - Course
+      summary: Add a new course.
+      security:
+        - bearerAuth: []
+      description: "Create a course. Security: Token JWT (class-representative, teacher and admin only)."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                degreeId:
+                  type: integer
+                  format: int64
+                name:
+                  type: string
+              required:
+                - degreeId
+                - name
+            examples:
+              json-example:
+                value:
+                  degreeId: 1
+                  name: "Operating Systems"
+          application/xml:
+            schema:
+              type: object
+              xml:
+                name: Course
+              properties:
+                degreeId:
+                  type: integer
+                name:
+                  type: string
+            examples:
+              xml-example:
+                value: |
+                  <Course>
+                    <degreeId>1</degreeId>
+                    <name>Operating Systems</name>
+                  </Course>
+      responses:
+        "200":
+          description: Course successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+              examples:
+                success-json:
+                  value:
+                    id: 14
+                    degreeId: 1
+                    name: "Operating Systems"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /courses/v1/{courseId}:
+    put:
+      tags:
+        - Course
+      summary: Update a course.
+      parameters:
+        - $ref: "#/components/parameters/courseId"
+      security:
+        - bearerAuth: []
+      description: "Update course details. Security: Token JWT (class-representative, teacher and admin only)."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                degreeId:
+                  type: integer
+                  format: int64
+                name:
+                  type: string
+              required:
+                - degreeId
+                - name
+            examples:
+              json-example:
+                value:
+                  degreeId: 1
+                  name: "Advanced Operating Systems"
+          application/xml:
+            schema:
+              type: object
+              xml:
+                name: Course
+              properties:
+                degreeId:
+                  type: integer
+                name:
+                  type: string
+            examples:
+              xml-example:
+                value: |
+                  <Course>
+                    <degreeId>1</degreeId>
+                    <name>Advanced Operating Systems</name>
+                  </Course>
+      responses:
+        "200":
+          description: Successful update of course
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Course not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - Course
+      summary: Delete a course.
+      parameters:
+        - $ref: "#/components/parameters/courseId"
+      security:
+        - bearerAuth: []
+      description: "Delete a course. Security: Token JWT (class-representative, teacher and admin only)."
+      responses:
+        "200":
+          description: Course successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "Course successfully deleted"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Course not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /courses/{courseId}/classes/v1:
+    get:
+      tags:
+        - Course
+      summary: Get the list of classes of a course.
+      parameters:
+        - $ref: "#/components/parameters/courseId"
+      description: Retrieve classes (sessions/resources) for a given course.
+      responses:
+        "200":
+          description: Successful retrieve of classes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Class"
+              examples:
+                json-example:
+                  value:
+                    - id: 101
+                      name: "Lecture 1 — Big O Notation"
+                      link: "https://meet.example.com/abc-defg"
+                      courseId: 12
+                    - id: 102
+                      name: "Lecture 2 — Sorting"
+                      link: "https://meet.example.com/hij-klmn"
+                      courseId: 12
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Course not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /classes/v1:
+    post:
+      tags:
+        - Class
+      summary: Add a new class.
+      security:
+        - bearerAuth: []
+      description: "Create a class. Security: Token JWT (class-representative, teacher and admin only)."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                link:
+                  type: string
+                courseId:
+                  type: integer
+                  format: int64
+              required:
+                - name
+                - link
+            examples:
+              json-example:
+                value:
+                  name: "Lecture 3 — Graphs"
+                  link: "https://meet.example.com/graph-lecture"
+                  courseId: 12
+          application/xml:
+            schema:
+              type: object
+              xml:
+                name: Class
+              properties:
+                name:
+                  type: string
+                link:
+                  type: string
+                courseId:
+                  type: integer
+            examples:
+              xml-example:
+                value: |
+                  <Class>
+                    <name>Lecture 3 — Graphs</name>
+                    <link>https://meet.example.com/graph-lecture</link>
+                    <courseId>12</courseId>
+                  </Class>
+      responses:
+        "200":
+          description: Class successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Class"
+              examples:
+                success-json:
+                  value:
+                    id: 103
+                    name: "Lecture 3 — Graphs"
+                    link: "https://meet.example.com/graph-lecture"
+                    courseId: 12
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /classes/v1/{classId}:
+    get:
+      tags:
+        - Class
+      summary: Find a class by ID.
+      parameters:
+        - $ref: "#/components/parameters/classId"
+      description: Retrieve a single class by its ID.
+      responses:
+        "200":
+          description: Successful retrieve of class
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Class"
+              examples:
+                json-example:
+                  value:
+                    id: 101
+                    name: "Lecture 1 — Big O Notation"
+                    link: "https://meet.example.com/abc-defg"
+                    courseId: 12
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Class"
+              examples:
+                xml-example:
+                  value: |
+                    <Class>
+                      <id>101</id>
+                      <name>Lecture 1 — Big O Notation</name>
+                      <link>https://meet.example.com/abc-defg</link>
+                      <courseId>12</courseId>
+                    </Class>
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Class not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - Class
+      summary: Update a class.
+      parameters:
+        - $ref: "#/components/parameters/classId"
+      security:
+        - bearerAuth: []
+      description: "Update class details. Security: Token JWT (class-representative, teacher and admin only)."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                link:
+                  type: string
+              required:
+                - name
+                - link
+            examples:
+              json-example:
+                value:
+                  name: "Lecture 1 — Big O Notation (Updated)"
+                  link: "https://meet.example.com/updated-abc-defg"
+          application/xml:
+            schema:
+              type: object
+              xml:
+                name: Class
+              properties:
+                name:
+                  type: string
+                link:
+                  type: string
+            examples:
+              xml-example:
+                value: |
+                  <Class>
+                    <name>Lecture 1 — Big O Notation (Updated)</name>
+                    <link>https://meet.example.com/updated-abc-defg</link>
+                  </Class>
+      responses:
+        "200":
+          description: Successful update of class
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Class"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Class not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - Class
+      summary: Delete a class.
+      parameters:
+        - $ref: "#/components/parameters/classId"
+      security:
+        - bearerAuth: []
+      description: "Delete a class. Security: Token JWT (class-representative, teacher and admin only)."
+      responses:
+        "200":
+          description: Class successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "Class successfully deleted"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Class not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/v1:
+    post:
+      tags:
+        - User
+      summary: Create user.
+      description: Create a new user account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+            examples:
+              json-example:
+                value:
+                  firstname: "Bob"
+                  lastname: "Johnson"
+                  email: "bob.johnson@example.com"
+                  password: "P@ssw0rd!"
+                  role: 0
+          application/xml:
+            schema:
+              type: object
+              xml:
+                name: User
+              properties:
+                firstname: { type: string }
+                lastname: { type: string }
+                email: { type: string }
+                password: { type: string }
+                role: { type: integer }
+            examples:
+              xml-example:
+                value: |
+                  <User>
+                    <firstname>Bob</firstname>
+                    <lastname>Johnson</lastname>
+                    <email>bob.johnson@example.com</email>
+                    <password>P@ssw0rd!</password>
+                    <role>0</role>
+                  </User>
+      responses:
+        "200":
+          description: User successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+              examples:
+                success:
+                  value:
+                    id: 10
+                    firstname: "Bob"
+                    lastname: "Johnson"
+                    email: "bob.johnson@example.com"
+                    role: 0
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/login/v1:
+    get:
+      tags:
+        - User
+      summary: Logs user into the system.
+      description: "Authenticate user with email and password. Returns a JWT session token on success."
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+          required: true
+          description: "User email"
+        - in: query
+          name: password
+          schema:
+            type: string
+          required: true
+          description: "User password"
+      responses:
+        "200":
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: "#/components/schemas/User"
+              examples:
+                success:
+                  value:
+                    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    user:
+                      id: 10
+                      firstname: "Bob"
+                      lastname: "Johnson"
+                      email: "bob.johnson@example.com"
+                      role: 0
+        "400":
+          description: Invalid email/password supplied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/logout/v1:
+    get:
+      tags:
+        - User
+      summary: Logs out current logged in user session.
+      description: "Invalidate or remove the current session/token on the server."
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successful logout
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "Successful logout"
+
+  /users/v1/{userId}:
+    get:
+      tags:
+        - User
+      summary: Find a user by ID.
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      description: Retrieve a user by their id.
+      responses:
+        "200":
+          description: Successful retrieve of user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+              examples:
+                json-example:
+                  value:
+                    id: 7
+                    firstname: "Alice"
+                    lastname: "Smith"
+                    email: "alice.smith@example.com"
+                    role: 0
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - User
+      summary: Delete user.
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      security:
+        - bearerAuth: []
+      description: "Delete a user. Security: Token JWT (user himself, admin only)."
+      responses:
+        "200":
+          description: User successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "User successfully deleted"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/{userId}/role/v1:
+    put:
+      tags:
+        - User
+      summary: Update the role of a user.
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      security:
+        - bearerAuth: []
+      description: |
+        Update the user's role. Security:
+        - Teachers can designate a student as class representative and vice versa.
+        - Admins can change everyone's role.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roleId:
+                  type: integer
+                  format: int64
+              required:
+                - roleId
+            examples:
+              json-example:
+                value:
+                  roleId: 1
+          application/xml:
+            schema:
+              type: object
+              xml:
+                name: RoleUpdate
+              properties:
+                roleId:
+                  type: integer
+            examples:
+              xml-example:
+                value: |
+                  <RoleUpdate>
+                    <roleId>1</roleId>
+                  </RoleUpdate>
+      responses:
+        "200":
+          description: Successful update of role
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+security:
+  - bearerAuth: []
