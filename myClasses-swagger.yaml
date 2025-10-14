@@ -371,7 +371,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /degrees/{degreeId}/courses/v1:
+  /degrees/v1/{degreeId}/courses:
     get:
       tags:
         - Degree
@@ -593,7 +593,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /courses/{courseId}/classes/v1:
+  /courses/v1/{courseId}/classes:
     get:
       tags:
         - Course
@@ -931,7 +931,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /users/login/v1:
+  /users/v1/login:
     get:
       tags:
         - User
@@ -979,7 +979,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /users/logout/v1:
+  /users/v1/logout:
     get:
       tags:
         - User
@@ -1069,7 +1069,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /users/{userId}/role/v1:
+  /users/v1/{userId}/role:
     put:
       tags:
         - User
