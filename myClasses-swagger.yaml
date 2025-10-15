@@ -11,10 +11,8 @@ info:
     In essence, the MyClasses API serves as a unified interface that simplifies both course management and
     access, ensuring a better learning experience for students.
 servers:
-  - url: https://api.myclasses.example.com
+  - url: https://myclasses/api
     description: Production server
-  - url: https://staging.api.myclasses.example.com
-    description: Staging server
 
 tags:
   - name: Degree
