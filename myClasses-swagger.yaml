@@ -49,12 +49,12 @@ components:
           type: integer
           format: int64
           readOnly: true
+        name:
+          type: string
         degreeId:
           type: integer
           format: int64
           description: "Identifier of the degree this course belongs to"
-        name:
-          type: string
       required:
         - degreeId
         - name
@@ -78,6 +78,7 @@ components:
       required:
         - name
         - link
+        - courseId
     User:
       type: object
       properties:
@@ -323,11 +324,11 @@ paths:
                 json-example:
                   value:
                     - id: 12
-                      degreeId: 1
                       name: "Introduction to Algorithms"
-                    - id: 13
                       degreeId: 1
+                    - id: 13
                       name: "Data Structures"
+                      degreeId: 1
         "400":
           description: Bad Request
         "404":
@@ -348,35 +349,35 @@ paths:
             schema:
               type: object
               properties:
+                name:
+                  type: string
                 degreeId:
                   type: integer
                   format: int64
-                name:
-                  type: string
               required:
-                - degreeId
                 - name
+                - degreeId
             examples:
               json-example:
                 value:
-                  degreeId: 1
                   name: "Operating Systems"
+                  degreeId: 1
           application/xml:
             schema:
               type: object
               xml:
                 name: Course
               properties:
-                degreeId:
-                  type: integer
                 name:
                   type: string
+                degreeId:
+                  type: integer
             examples:
               xml-example:
                 value: |
                   <Course>
-                    <degreeId>1</degreeId>
                     <name>Operating Systems</name>
+                    <degreeId>1</degreeId>
                   </Course>
       responses:
         "200":
@@ -389,8 +390,8 @@ paths:
                 json-example:
                   value:
                     id: 14
-                    degreeId: 1
                     name: "Operating Systems"
+                    degreeId: 1
         "400":
           description: Bad Request
         "401":
@@ -413,35 +414,35 @@ paths:
             schema:
               type: object
               properties:
+                name:
+                  type: string
                 degreeId:
                   type: integer
                   format: int64
-                name:
-                  type: string
               required:
-                - degreeId
                 - name
+                - degreeId
             examples:
               json-example:
                 value:
-                  degreeId: 1
                   name: "Introduction to Algorithms"
+                  degreeId: 1
           application/xml:
             schema:
               type: object
               xml:
                 name: Course
               properties:
-                degreeId:
-                  type: integer
                 name:
                   type: string
+                degreeId:
+                  type: integer
             examples:
               xml-example:
                 value: |
                   <Course>
-                    <degreeId>1</degreeId>
                     <name>Introduction to Algorithms</name>
+                    <degreeId>1</degreeId>
                   </Course>
       responses:
         "200":
@@ -454,8 +455,8 @@ paths:
                 json-example:
                   value:
                     id: 12
-                    degreeId: 1
                     name: "Introduction to Algorithms"
+                    degreeId: 1
         "400":
           description: Bad Request
         "401":
@@ -539,6 +540,7 @@ paths:
               required:
                 - name
                 - link
+                - courseId
             examples:
               json-example:
                 value:
