@@ -126,16 +126,6 @@ components:
         lastname: "Smith"
         email: "alice.smith@example.com"
         role: 0
-    Error:
-      type: object
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
-      example:
-        code: 400
-        message: "Bad Request"
   parameters:
     degreeId:
       name: degreeId
@@ -235,16 +225,8 @@ paths:
                     </Degree>
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "401":
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
     get:
       tags:
         - Degree
@@ -315,22 +297,10 @@ paths:
                 $ref: "#/components/schemas/Degree"
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "401":
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "404":
           description: Degree not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
     delete:
       tags:
         - Degree
@@ -354,22 +324,10 @@ paths:
                   message: "Degree successfully deleted"
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "401":
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "404":
           description: Degree not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
 
   /degrees/v1/{degreeId}/courses:
     get:
@@ -399,16 +357,8 @@ paths:
                       name: "Data Structures"
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "404":
           description: Degree not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
 
   /courses/v1:
     post:
@@ -470,16 +420,8 @@ paths:
                     name: "Operating Systems"
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "401":
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
 
   /courses/v1/{courseId}:
     put:
@@ -537,22 +479,10 @@ paths:
                 $ref: "#/components/schemas/Course"
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "401":
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "404":
           description: Course not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
     delete:
       tags:
         - Course
@@ -576,22 +506,10 @@ paths:
                   message: "Course successfully deleted"
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "401":
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "404":
           description: Course not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
 
   /courses/v1/{courseId}/classes:
     get:
@@ -623,16 +541,8 @@ paths:
                       courseId: 12
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "404":
           description: Course not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
 
   /classes/v1:
     post:
@@ -701,16 +611,8 @@ paths:
                     courseId: 12
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "401":
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
 
   /classes/v1/{classId}:
     get:
@@ -748,16 +650,8 @@ paths:
                     </Class>
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "404":
           description: Class not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
     put:
       tags:
         - Class
@@ -812,22 +706,10 @@ paths:
                 $ref: "#/components/schemas/Class"
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "401":
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "404":
           description: Class not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
     delete:
       tags:
         - Class
@@ -851,22 +733,10 @@ paths:
                   message: "Class successfully deleted"
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "401":
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "404":
           description: Class not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
 
   /users/v1:
     post:
@@ -926,10 +796,6 @@ paths:
                     role: 0
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
 
   /users/v1/login:
     get:
@@ -974,10 +840,6 @@ paths:
                       role: 0
         "400":
           description: Invalid email/password supplied
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
 
   /users/v1/logout:
     get:
@@ -1025,10 +887,6 @@ paths:
                     role: 0
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
     delete:
       tags:
         - User
@@ -1052,22 +910,10 @@ paths:
                   message: "User successfully deleted"
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "401":
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "404":
           description: User not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
 
   /users/v1/{userId}/role:
     put:
@@ -1121,22 +967,10 @@ paths:
                 $ref: "#/components/schemas/User"
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "401":
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "404":
           description: User not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
 
 security:
   - bearerAuth: []
