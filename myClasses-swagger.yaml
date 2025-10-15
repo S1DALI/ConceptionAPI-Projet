@@ -11,8 +11,7 @@ info:
     In essence, the MyClasses API serves as a unified interface that simplifies both course management and
     access, ensuring a better learning experience for students.
 servers:
-  - url: https://myclasses/api
-    description: Production server
+  - url: https://www.myclasses.com/api
 
 tags:
   - name: Degree
@@ -20,7 +19,7 @@ tags:
   - name: Course
     description: Endpoints related to courses
   - name: Class
-    description: Endpoints related to classes (sessions / resources)
+    description: Endpoints related to classes
   - name: User
     description: Endpoints related to user management and authentication
 
@@ -43,9 +42,6 @@ components:
           type: string
       required:
         - name
-      example:
-        id: 1
-        name: "Computer Science"
     Course:
       type: object
       properties:
@@ -62,10 +58,6 @@ components:
       required:
         - degreeId
         - name
-      example:
-        id: 12
-        degreeId: 1
-        name: "Introduction to Algorithms"
     Class:
       type: object
       properties:
@@ -82,15 +74,10 @@ components:
         courseId:
           type: integer
           format: int64
-          description: "Identifier of the course this class belongs to (optional)"
+          description: "Identifier of the course this class belongs to"
       required:
         - name
         - link
-      example:
-        id: 101
-        name: "Lecture 1 — Big O Notation"
-        link: "https://meet.example.com/abc-defg"
-        courseId: 12
     User:
       type: object
       properties:
@@ -107,8 +94,6 @@ components:
           format: email
         password:
           type: string
-          writeOnly: true
-          description: "Plain password on create; stored hashed on server"
         role:
           type: integer
           format: int64
@@ -118,12 +103,6 @@ components:
         - lastname
         - email
         - password
-      example:
-        id: 7
-        firstname: "Alice"
-        lastname: "Smith"
-        email: "alice.smith@example.com"
-        role: 0
   parameters:
     degreeId:
       name: degreeId
@@ -207,7 +186,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Degree"
               examples:
-                success-json:
+                json-example:
                   value:
                     id: 1
                     name: "Computer Science"
@@ -271,7 +250,7 @@ paths:
             examples:
               json-example:
                 value:
-                  name: "Computer Science and Engineering"
+                  name: "Computer Science"
           application/xml:
             schema:
               type: object
@@ -284,7 +263,7 @@ paths:
               xml-example:
                 value: |
                   <Degree>
-                    <name>Computer Science and Engineering</name>
+                    <name>Computer Science</name>
                   </Degree>
       responses:
         "200":
@@ -293,6 +272,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Degree"
+              examples:
+                json-example:
+                  value:
+                    id: 1
+                    name: "Computer Science"
         "400":
           description: Bad Request
         "401":
@@ -311,15 +295,6 @@ paths:
       responses:
         "200":
           description: Degree successfully deleted
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: "Degree successfully deleted"
         "400":
           description: Bad Request
         "401":
@@ -411,7 +386,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Course"
               examples:
-                success-json:
+                json-example:
                   value:
                     id: 14
                     degreeId: 1
@@ -450,7 +425,7 @@ paths:
               json-example:
                 value:
                   degreeId: 1
-                  name: "Advanced Operating Systems"
+                  name: "Introduction to Algorithms"
           application/xml:
             schema:
               type: object
@@ -466,7 +441,7 @@ paths:
                 value: |
                   <Course>
                     <degreeId>1</degreeId>
-                    <name>Advanced Operating Systems</name>
+                    <name>Introduction to Algorithms</name>
                   </Course>
       responses:
         "200":
@@ -475,6 +450,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Course"
+              examples:
+                json-example:
+                  value:
+                    id: 12
+                    degreeId: 1
+                    name: "Introduction to Algorithms"
         "400":
           description: Bad Request
         "401":
@@ -493,15 +474,6 @@ paths:
       responses:
         "200":
           description: Course successfully deleted
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: "Course successfully deleted"
         "400":
           description: Bad Request
         "401":
@@ -516,7 +488,7 @@ paths:
       summary: Get the list of classes of a course.
       parameters:
         - $ref: "#/components/parameters/courseId"
-      description: Retrieve classes (sessions/resources) for a given course.
+      description: Retrieve classes for a given course.
       responses:
         "200":
           description: Successful retrieve of classes
@@ -530,12 +502,12 @@ paths:
                 json-example:
                   value:
                     - id: 101
-                      name: "Lecture 1 — Big O Notation"
-                      link: "https://meet.example.com/abc-defg"
+                      name: "Lecture 1: Big O Notation"
+                      link: "https://www.example.com/lecture1"
                       courseId: 12
                     - id: 102
-                      name: "Lecture 2 — Sorting"
-                      link: "https://meet.example.com/hij-klmn"
+                      name: "Lecture 2: Sorting"
+                      link: "https://www.example.com/lecture2"
                       courseId: 12
         "400":
           description: Bad Request
@@ -570,8 +542,8 @@ paths:
             examples:
               json-example:
                 value:
-                  name: "Lecture 3 — Graphs"
-                  link: "https://meet.example.com/graph-lecture"
+                  name: "Lecture 3: Graphs"
+                  link: "https://www.example.com/lecture3"
                   courseId: 12
           application/xml:
             schema:
@@ -589,8 +561,8 @@ paths:
               xml-example:
                 value: |
                   <Class>
-                    <name>Lecture 3 — Graphs</name>
-                    <link>https://meet.example.com/graph-lecture</link>
+                    <name>Lecture 3: Graphs</name>
+                    <link>https://www.example.com/lecture3</link>
                     <courseId>12</courseId>
                   </Class>
       responses:
@@ -601,11 +573,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/Class"
               examples:
-                success-json:
+                json-example:
                   value:
                     id: 103
-                    name: "Lecture 3 — Graphs"
-                    link: "https://meet.example.com/graph-lecture"
+                    name: "Lecture 3: Graphs"
+                    link: "https://www.example.com/lecture3"
                     courseId: 12
         "400":
           description: Bad Request
@@ -619,7 +591,7 @@ paths:
       summary: Find a class by ID.
       parameters:
         - $ref: "#/components/parameters/classId"
-      description: Retrieve a single class by its ID.
+      description: Retrieve a class by its ID.
       responses:
         "200":
           description: Successful retrieve of class
@@ -631,21 +603,9 @@ paths:
                 json-example:
                   value:
                     id: 101
-                    name: "Lecture 1 — Big O Notation"
-                    link: "https://meet.example.com/abc-defg"
+                    name: "Lecture 1: Big O Notation"
+                    link: "https://www.example.com/lecture1"
                     courseId: 12
-            application/xml:
-              schema:
-                $ref: "#/components/schemas/Class"
-              examples:
-                xml-example:
-                  value: |
-                    <Class>
-                      <id>101</id>
-                      <name>Lecture 1 — Big O Notation</name>
-                      <link>https://meet.example.com/abc-defg</link>
-                      <courseId>12</courseId>
-                    </Class>
         "400":
           description: Bad Request
         "404":
@@ -676,8 +636,8 @@ paths:
             examples:
               json-example:
                 value:
-                  name: "Lecture 1 — Big O Notation (Updated)"
-                  link: "https://meet.example.com/updated-abc-defg"
+                  name: "Lecture 1: Big O Notation"
+                  link: "https://www.example.com/lecture1"
           application/xml:
             schema:
               type: object
@@ -692,8 +652,8 @@ paths:
               xml-example:
                 value: |
                   <Class>
-                    <name>Lecture 1 — Big O Notation (Updated)</name>
-                    <link>https://meet.example.com/updated-abc-defg</link>
+                    <name>Lecture 1: Big O Notation</name>
+                    <link>https://www.example.com/lecture1</link>
                   </Class>
       responses:
         "200":
@@ -702,6 +662,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Class"
+              examples:
+                json-example:
+                  value:
+                    id: 101
+                    name: "Lecture 1: Big O Notation"
+                    link: "https://www.example.com/lecture1"
+                    courseId: 12
         "400":
           description: Bad Request
         "401":
@@ -720,15 +687,6 @@ paths:
       responses:
         "200":
           description: Class successfully deleted
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: "Class successfully deleted"
         "400":
           description: Bad Request
         "401":
@@ -754,7 +712,7 @@ paths:
                   firstname: "Bob"
                   lastname: "Johnson"
                   email: "bob.johnson@example.com"
-                  password: "P@ssw0rd!"
+                  password: "12345"
                   role: 0
           application/xml:
             schema:
@@ -774,7 +732,7 @@ paths:
                     <firstname>Bob</firstname>
                     <lastname>Johnson</lastname>
                     <email>bob.johnson@example.com</email>
-                    <password>P@ssw0rd!</password>
+                    <password>12345</password>
                     <role>0</role>
                   </User>
       responses:
@@ -785,7 +743,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/User"
               examples:
-                success:
+                json-example:
                   value:
                     id: 10
                     firstname: "Bob"
@@ -827,7 +785,7 @@ paths:
                   user:
                     $ref: "#/components/schemas/User"
               examples:
-                success:
+                json-example:
                   value:
                     token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                     user:
@@ -850,15 +808,6 @@ paths:
       responses:
         "200":
           description: Successful logout
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: "Successful logout"
 
   /v1/users/{userId}:
     get:
@@ -867,7 +816,9 @@ paths:
       summary: Find a user by ID.
       parameters:
         - $ref: "#/components/parameters/userId"
-      description: Retrieve a user by their id.
+      security:
+        - bearerAuth: []
+      description: "Retrieve a user by their id. Security: Token JWT (admin only)."
       responses:
         "200":
           description: Successful retrieve of user
@@ -893,19 +844,10 @@ paths:
         - $ref: "#/components/parameters/userId"
       security:
         - bearerAuth: []
-      description: "Delete a user. Security: Token JWT (user himself, admin only)."
+      description: "Delete a user. Security: Token JWT (user himself and admin only)."
       responses:
         "200":
           description: User successfully deleted
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: "User successfully deleted"
         "400":
           description: Bad Request
         "401":
@@ -923,7 +865,7 @@ paths:
       security:
         - bearerAuth: []
       description: |
-        Update the user's role, can be used by admins but also by teachers who want to designate a student as class representative.
+        Update the user's role. Can be used by admins but also by teachers who want to designate a student as class-representative.
       requestBody:
         required: true
         content:
@@ -961,12 +903,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
+              examples:
+                json-example:
+                  value:
+                    id: 7
+                    firstname: "Alice"
+                    lastname: "Smith"
+                    email: "alice.smith@example.com"
+                    role: 1
         "400":
           description: Bad Request
         "401":
           description: Unauthorized
         "404":
           description: User not found
-
-security:
-  - bearerAuth: []
