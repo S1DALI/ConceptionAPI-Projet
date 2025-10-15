@@ -159,7 +159,7 @@ components:
       description: "User identifier"
 
 paths:
-  /degrees/v1:
+  /v1/degrees:
     post:
       tags:
         - Degree
@@ -247,7 +247,7 @@ paths:
                     - id: 2
                       name: "Business Administration"
 
-  /degrees/v1/{degreeId}:
+  /v1/degrees/{degreeId}:
     put:
       tags:
         - Degree
@@ -327,7 +327,7 @@ paths:
         "404":
           description: Degree not found
 
-  /degrees/v1/{degreeId}/courses:
+  /v1/degrees/{degreeId}/courses:
     get:
       tags:
         - Degree
@@ -358,7 +358,7 @@ paths:
         "404":
           description: Degree not found
 
-  /courses/v1:
+  /v1/courses:
     post:
       tags:
         - Course
@@ -421,7 +421,7 @@ paths:
         "401":
           description: Unauthorized
 
-  /courses/v1/{courseId}:
+  /v1/courses/{courseId}:
     put:
       tags:
         - Course
@@ -509,7 +509,7 @@ paths:
         "404":
           description: Course not found
 
-  /courses/v1/{courseId}/classes:
+  /v1/courses/{courseId}/classes:
     get:
       tags:
         - Course
@@ -542,7 +542,7 @@ paths:
         "404":
           description: Course not found
 
-  /classes/v1:
+  /v1/classes:
     post:
       tags:
         - Class
@@ -612,7 +612,7 @@ paths:
         "401":
           description: Unauthorized
 
-  /classes/v1/{classId}:
+  /v1/classes/{classId}:
     get:
       tags:
         - Class
@@ -736,7 +736,7 @@ paths:
         "404":
           description: Class not found
 
-  /users/v1:
+  /v1/users:
     post:
       tags:
         - User
@@ -795,7 +795,7 @@ paths:
         "400":
           description: Bad Request
 
-  /users/v1/login:
+  /v1/users/login:
     get:
       tags:
         - User
@@ -839,7 +839,7 @@ paths:
         "400":
           description: Invalid email/password supplied
 
-  /users/v1/logout:
+  /v1/users/logout:
     get:
       tags:
         - User
@@ -860,7 +860,7 @@ paths:
                 example:
                   message: "Successful logout"
 
-  /users/v1/{userId}:
+  /v1/users/{userId}:
     get:
       tags:
         - User
@@ -913,7 +913,7 @@ paths:
         "404":
           description: User not found
 
-  /users/v1/{userId}/role:
+  /v1/users/{userId}/role:
     put:
       tags:
         - User
