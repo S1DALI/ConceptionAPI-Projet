@@ -37,7 +37,6 @@ components:
         id:
           type: integer
           format: int64
-          readOnly: true
         name:
           type: string
       required:
@@ -48,7 +47,6 @@ components:
         id:
           type: integer
           format: int64
-          readOnly: true
         name:
           type: string
         degreeId:
@@ -64,7 +62,6 @@ components:
         id:
           type: integer
           format: int64
-          readOnly: true
         name:
           type: string
         link:
@@ -85,7 +82,6 @@ components:
         id:
           type: integer
           format: int64
-          readOnly: true
         firstname:
           type: string
         lastname:
@@ -146,7 +142,6 @@ paths:
       summary: Add a new degree.
       security:
         - bearerAuth: []
-      # Allowed roles: admin only
       description: "Create a new degree. Security: Token JWT (admin only)."
       requestBody:
         required: true
@@ -226,14 +221,10 @@ paths:
                       name: "Computer Science"
                     - id: 2
                       name: "Business Administration"
-
-  /v1/degrees/{degreeId}:
     put:
       tags:
         - Degree
       summary: Update the name of a degree.
-      parameters:
-        - $ref: "#/components/parameters/degreeId"
       security:
         - bearerAuth: []
       description: "Update degree name. Security: Token JWT (admin only)."
@@ -242,28 +233,20 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-              required:
-                - name
+              $ref: "#/components/schemas/Degree"
             examples:
               json-example:
                 value:
+                  id: 1
                   name: "Computer Science"
           application/xml:
             schema:
-              type: object
-              xml:
-                name: Degree
-              properties:
-                name:
-                  type: string
+              $ref: "#/components/schemas/Degree"
             examples:
               xml-example:
                 value: |
                   <Degree>
+                    <id>1</id>
                     <name>Computer Science</name>
                   </Degree>
       responses:
@@ -282,6 +265,31 @@ paths:
           description: Bad Request
         "401":
           description: Unauthorized
+        "404":
+          description: Degree not found
+
+  /v1/degrees/{degreeId}:
+    get:
+      tags:
+        - Degree
+      summary: Find a degree by ID.
+      parameters:
+        - $ref: "#/components/parameters/degreeId"
+      description: "Retrieve a degree by its ID."
+      responses:
+        "200":
+          description: Successful retrieve of degree
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Degree"
+              examples:
+                json-example:
+                  value:
+                    id: 1
+                    name: "Computer Science"
+        "400":
+          description: Bad Request
         "404":
           description: Degree not found
     delete:
@@ -396,14 +404,10 @@ paths:
           description: Bad Request
         "401":
           description: Unauthorized
-
-  /v1/courses/{courseId}:
     put:
       tags:
         - Course
       summary: Update a course.
-      parameters:
-        - $ref: "#/components/parameters/courseId"
       security:
         - bearerAuth: []
       description: "Update course details. Security: Token JWT (class-representative, teacher and admin only)."
@@ -412,35 +416,21 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                degreeId:
-                  type: integer
-                  format: int64
-              required:
-                - name
-                - degreeId
+              $ref: "#/components/schemas/Course"
             examples:
               json-example:
                 value:
+                  id: 12
                   name: "Introduction to Algorithms"
                   degreeId: 1
           application/xml:
             schema:
-              type: object
-              xml:
-                name: Course
-              properties:
-                name:
-                  type: string
-                degreeId:
-                  type: integer
+              $ref: "#/components/schemas/Course"
             examples:
               xml-example:
                 value: |
                   <Course>
+                    <id>12</id>
                     <name>Introduction to Algorithms</name>
                     <degreeId>1</degreeId>
                   </Course>
@@ -463,6 +453,7 @@ paths:
           description: Unauthorized
         "404":
           description: Course not found
+  /v1/courses/{courseId}:
     delete:
       tags:
         - Course
@@ -585,6 +576,58 @@ paths:
           description: Bad Request
         "401":
           description: Unauthorized
+    put:
+      tags:
+        - Class
+      summary: Update a class.
+      security:
+        - bearerAuth: []
+      description: "Update class details. Security: Token JWT (class-representative, teacher and admin only)."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Class"
+            examples:
+              json-example:
+                value:
+                  id: 101
+                  name: "Lecture 1: Big O Notation"
+                  link: "https://www.example.com/lecture1"
+                  courseId: 12
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/Class"
+            examples:
+              xml-example:
+                value: |
+                  <Class>
+                    <id>101</id>
+                    <name>Lecture 1: Big O Notation</name>
+                    <link>https://www.example.com/lecture1</link>
+                    <courseId>12</courseId>
+                  </Class>
+      responses:
+        "200":
+          description: Successful update of class
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Class"
+              examples:
+                json-example:
+                  value:
+                    id: 101
+                    name: "Lecture 1: Big O Notation"
+                    link: "https://www.example.com/lecture1"
+                    courseId: 12
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Class not found
 
   /v1/classes/{classId}:
     get:
@@ -610,71 +653,6 @@ paths:
                     courseId: 12
         "400":
           description: Bad Request
-        "404":
-          description: Class not found
-    put:
-      tags:
-        - Class
-      summary: Update a class.
-      parameters:
-        - $ref: "#/components/parameters/classId"
-      security:
-        - bearerAuth: []
-      description: "Update class details. Security: Token JWT (class-representative, teacher and admin only)."
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                link:
-                  type: string
-              required:
-                - name
-                - link
-            examples:
-              json-example:
-                value:
-                  name: "Lecture 1: Big O Notation"
-                  link: "https://www.example.com/lecture1"
-          application/xml:
-            schema:
-              type: object
-              xml:
-                name: Class
-              properties:
-                name:
-                  type: string
-                link:
-                  type: string
-            examples:
-              xml-example:
-                value: |
-                  <Class>
-                    <name>Lecture 1: Big O Notation</name>
-                    <link>https://www.example.com/lecture1</link>
-                  </Class>
-      responses:
-        "200":
-          description: Successful update of class
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Class"
-              examples:
-                json-example:
-                  value:
-                    id: 101
-                    name: "Lecture 1: Big O Notation"
-                    link: "https://www.example.com/lecture1"
-                    courseId: 12
-        "400":
-          description: Bad Request
-        "401":
-          description: Unauthorized
         "404":
           description: Class not found
     delete:
