@@ -89,17 +89,13 @@ components:
         email:
           type: string
           format: email
-        password:
-          type: string
+        degreeId:
+          type: integer
+          format: int64
         role:
           type: integer
           format: int64
           description: "Role (student 0, class-representative 1, teacher 2, admin 3)"
-      required:
-        - firstname
-        - lastname
-        - email
-        - password
   parameters:
     degreeId:
       name: degreeId
@@ -685,7 +681,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              type: object
+              properties:
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - firstname
+                - lastname
+                - email
+                - password
             examples:
               json-example:
                 value:
@@ -693,18 +703,25 @@ paths:
                   lastname: "Johnson"
                   email: "bob.johnson@example.com"
                   password: "12345"
-                  role: 0
           application/xml:
             schema:
               type: object
               xml:
                 name: User
               properties:
-                firstname: { type: string }
-                lastname: { type: string }
-                email: { type: string }
-                password: { type: string }
-                role: { type: integer }
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - firstname
+                - lastname
+                - email
+                - password
             examples:
               xml-example:
                 value: |
@@ -713,7 +730,6 @@ paths:
                     <lastname>Johnson</lastname>
                     <email>bob.johnson@example.com</email>
                     <password>12345</password>
-                    <role>0</role>
                   </User>
       responses:
         "200":
@@ -729,6 +745,7 @@ paths:
                     firstname: "Bob"
                     lastname: "Johnson"
                     email: "bob.johnson@example.com"
+                    degreeId: 1
                     role: 0
         "400":
           description: Bad Request
@@ -755,11 +772,13 @@ paths:
                       firstname: "Helen"
                       lastname: "Clark"
                       email: "helen.clark@example.com"
+                      degreeId: 1
                       role: 0
                     - id: 2
                       firstname: "Anthony"
                       lastname: "Jones"
                       email: "anthony.jones@example.com"
+                      degreeId: 1
                       role: 0
 
   /v1/users/login:
@@ -802,6 +821,7 @@ paths:
                       firstname: "Bob"
                       lastname: "Johnson"
                       email: "bob.johnson@example.com"
+                      degreeId: 1
                       role: 0
         "400":
           description: Invalid email/password supplied
@@ -842,6 +862,7 @@ paths:
                     firstname: "Alice"
                     lastname: "Smith"
                     email: "alice.smith@example.com"
+                    degreeId: 1
                     role: 0
         "400":
           description: Bad Request
@@ -922,7 +943,76 @@ paths:
                     firstname: "Alice"
                     lastname: "Smith"
                     email: "alice.smith@example.com"
+                    degreeId: 1
                     role: 1
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: User not found
+
+  /v1/users/{userId}/degreeId:
+    patch:
+      tags:
+        - User
+      summary: Update the degree of a user.
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      security:
+        - bearerAuth: []
+      description: |
+        Update the user's degree. If the user is a class representative and their degree changes, they will be reassigned as a student.
+        Security: Token JWT (professor and admin only).
+        This operation is idempotent.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                degreeId:
+                  type: integer
+                  format: int64
+              required:
+                - degreeId
+            examples:
+              json-example:
+                value:
+                  degreeId: 1
+          application/xml:
+            schema:
+              type: object
+              xml:
+                name: DegreeUpdate
+              properties:
+                degreeId:
+                  type: integer
+              required:
+                - degreeId
+            examples:
+              xml-example:
+                value: |
+                  <DegreeUpdate>
+                    <degreeId>1</degreeId>
+                  </DegreeUpdate>
+      responses:
+        "200":
+          description: Successful update of degree
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+              examples:
+                json-example:
+                  value:
+                    id: 7
+                    firstname: "Alice"
+                    lastname: "Smith"
+                    email: "alice.smith@example.com"
+                    degreeId: 1
+                    role: 0
         "400":
           description: Bad Request
         "401":
