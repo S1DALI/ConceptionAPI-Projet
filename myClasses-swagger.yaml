@@ -3,6 +3,16 @@ info:
   title: MyClasses API
   version: "1.0.0"
   description: |
+
+    ### Motivation
+
+    With the growing number of course platforms, students often face fragmented access to their courses and resources. 
+    Professors, on the other hand, must manage their course content alone, which can be time-consuming.
+    To address this issue, we identified the need for a centralized solution that brings together all course information and management features within a single, unified interface.
+    The core philosophy of our solution is to give the control to a student which will have elevated privileges for a course (class representative).
+
+    ### Presentation
+
     The MyClasses API is designed to give students centralized and seamless access to all their courses,
     even when these are spread across multiple platforms and sources. With this API, students can easily
     retrieve all relevant course information, while professors are equipped to efficiently manage and
@@ -10,6 +20,21 @@ info:
     ability to manage all related resources and delete accounts.
     In essence, the MyClasses API serves as a unified interface that simplifies both course management and
     access, ensuring a better learning experience for students.
+
+    Authentication is handled through JWT tokens to ensure security.
+
+    ### Roles
+
+    For our API, we created four roles : 
+    - Student
+    - Class representative
+    - Professor
+    - Admin
+
+    The class-representative role grants management privileges to a student over course resources,
+    allowing them to assist the teacher.
+
+
 servers:
   - url: https://www.myclasses.com/api
 
