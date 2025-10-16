@@ -122,7 +122,7 @@ components:
         role:
           type: integer
           format: int64
-          description: "Role (student 0, class-representative 1, teacher 2, admin 3)"
+          description: "Role (student 0, class representative 1, teacher 2, admin 3)"
       required:
         - id
         - firstname
@@ -436,7 +436,7 @@ paths:
       summary: Update a course.
       security:
         - bearerAuth: []
-      description: "Update course details. Security: Token JWT (class-representative, teacher and admin only)."
+      description: "Update course details. Security: Token JWT (class representative, teacher and admin only)."
       requestBody:
         required: true
         content:
@@ -478,7 +478,7 @@ paths:
         - $ref: "#/components/parameters/courseId"
       security:
         - bearerAuth: []
-      description: "Delete a course. Security: Token JWT (class-representative, teacher and admin only)."
+      description: "Delete a course. Security: Token JWT (class representative, teacher and admin only)."
       responses:
         "200":
           description: Course successfully deleted
@@ -529,7 +529,7 @@ paths:
       summary: Add a new class.
       security:
         - bearerAuth: []
-      description: "Create a class. Security: Token JWT (class-representative, teacher and admin only)."
+      description: "Create a class. Security: Token JWT (class representative, teacher and admin only)."
       requestBody:
         required: true
         content:
@@ -598,7 +598,7 @@ paths:
       summary: Update a class.
       security:
         - bearerAuth: []
-      description: "Update class details. Security: Token JWT (class-representative, teacher and admin only)."
+      description: "Update class details. Security: Token JWT (class representative, teacher and admin only)."
       requestBody:
         required: true
         content:
@@ -668,7 +668,7 @@ paths:
         - $ref: "#/components/parameters/classId"
       security:
         - bearerAuth: []
-      description: "Delete a class. Security: Token JWT (class-representative, teacher and admin only)."
+      description: "Delete a class. Security: Token JWT (class representative, teacher and admin only)."
       responses:
         "200":
           description: Class successfully deleted
@@ -909,7 +909,7 @@ paths:
       security:
         - bearerAuth: []
       description: |
-        Update the user's role. Can be used by admins but also by teachers who want to designate a student as class-representative.
+        Update the user's role. Can be used by admins but also by teachers who want to designate a student as class representative.
         This operation is idempotent.
       requestBody:
         required: true
