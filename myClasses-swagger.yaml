@@ -31,9 +31,8 @@ info:
     - Professor
     - Admin
 
-    The class-representative role grants management privileges to a student over course resources,
+    The class representative role grants management privileges to a student over course resources,
     allowing them to assist the teacher.
-
 
 servers:
   - url: https://www.myclasses.com/api
@@ -65,6 +64,7 @@ components:
         name:
           type: string
       required:
+        - id
         - name
     Course:
       type: object
@@ -79,6 +79,7 @@ components:
           format: int64
           description: "Identifier of the degree this course belongs to"
       required:
+        - id
         - degreeId
         - name
     Class:
@@ -98,6 +99,7 @@ components:
           format: int64
           description: "Identifier of the course this class belongs to"
       required:
+        - id
         - name
         - link
         - courseId
@@ -121,6 +123,13 @@ components:
           type: integer
           format: int64
           description: "Role (student 0, class-representative 1, teacher 2, admin 3)"
+      required:
+        - id
+        - firstname
+        - lastname
+        - email
+        - degreeId
+        - role
   parameters:
     degreeId:
       name: degreeId
@@ -188,6 +197,8 @@ paths:
               properties:
                 name:
                   type: string
+              required:
+                - name
             examples:
               xml-example:
                 summary: XML example
@@ -273,15 +284,6 @@ paths:
       responses:
         "200":
           description: Successful update of degree
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Degree"
-              examples:
-                json-example:
-                  value:
-                    id: 1
-                    name: "Computer Science"
         "400":
           description: Bad Request
         "401":
@@ -370,7 +372,7 @@ paths:
       summary: Add a new course.
       security:
         - bearerAuth: []
-      description: "Create a course. Security: Token JWT (class-representative, teacher and admin only)."
+      description: "Create a course. Security: Token JWT (class representative, teacher and admin only)."
       requestBody:
         required: true
         content:
@@ -401,6 +403,9 @@ paths:
                   type: string
                 degreeId:
                   type: integer
+              required:
+                - name
+                - degreeId
             examples:
               xml-example:
                 value: |
@@ -458,16 +463,6 @@ paths:
       responses:
         "200":
           description: Successful update of course
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Course"
-              examples:
-                json-example:
-                  value:
-                    id: 12
-                    name: "Introduction to Algorithms"
-                    degreeId: 1
         "400":
           description: Bad Request
         "401":
@@ -632,17 +627,6 @@ paths:
       responses:
         "200":
           description: Successful update of class
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Class"
-              examples:
-                json-example:
-                  value:
-                    id: 101
-                    name: "Lecture 1: Big O Notation"
-                    link: "https://www.example.com/lecture1"
-                    courseId: 12
         "400":
           description: Bad Request
         "401":
@@ -837,6 +821,9 @@ paths:
                     type: string
                   user:
                     $ref: "#/components/schemas/User"
+                required:
+                  - token
+                  - user
               examples:
                 json-example:
                   value:
@@ -891,6 +878,8 @@ paths:
                     role: 0
         "400":
           description: Bad Request
+        "404":
+          description: User not found
     delete:
       tags:
         - User
@@ -957,19 +946,6 @@ paths:
       responses:
         "200":
           description: Successful update of role
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
-              examples:
-                json-example:
-                  value:
-                    id: 7
-                    firstname: "Alice"
-                    lastname: "Smith"
-                    email: "alice.smith@example.com"
-                    degreeId: 1
-                    role: 1
         "400":
           description: Bad Request
         "401":
@@ -1025,19 +1001,6 @@ paths:
       responses:
         "200":
           description: Successful update of degree
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
-              examples:
-                json-example:
-                  value:
-                    id: 7
-                    firstname: "Alice"
-                    lastname: "Smith"
-                    email: "alice.smith@example.com"
-                    degreeId: 1
-                    role: 0
         "400":
           description: Bad Request
         "401":
