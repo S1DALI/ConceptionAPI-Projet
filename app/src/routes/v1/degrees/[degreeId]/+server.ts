@@ -36,7 +36,5 @@ export const DELETE: RequestHandler = ({ params }) => {
 
     degrees = degrees.filter(d => d.id !== id);
 
-    return new Response(JSON.stringify({ message: "Degree deleted" }), {
-        status: 200
-    });
+    return new Response("Degree deleted", { status: 200 });
 };
