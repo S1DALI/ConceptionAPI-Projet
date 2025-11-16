@@ -1,18 +1,21 @@
 import type { RequestHandler } from "@sveltejs/kit";
+import db from "$lib/db";
 
-let courses = [
-    { id: 12, name: "Introduction to Algorithms", degreeId: 1 },
-    { id: 13, name: "Data Structures", degreeId: 1 }
-];
 
 export const GET: RequestHandler = ({ params }) => {
-    const id = Number(params.degreeId);
+    const degreeId = Number(params.degreeId);
 
-    if (isNaN(id)) {
+    if (isNaN(degreeId)) {
         return new Response("Bad Request", { status: 400 });
     }
 
-    const list = courses.filter(c => c.degreeId === id);
+    const statement = db.prepare(`
+        SELECT id, name, degreeId
+        FROM courses
+        WHERE degreeId = ?
+    `);
 
-    return new Response(JSON.stringify(list), { status: 200 });
+    const courses = statement.all(degreeId);
+
+    return new Response(JSON.stringify(courses), { status: 200 });
 };

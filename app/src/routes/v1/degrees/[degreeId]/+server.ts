@@ -1,9 +1,6 @@
 import type { RequestHandler } from "@sveltejs/kit";
+import db from "$lib/db";
 
-let degrees = [
-    { id: 1, name: "Computer Science" },
-    { id: 2, name: "Business Administration" }
-];
 
 export const GET: RequestHandler = ({ params }) => {
     const id = Number(params.degreeId);
@@ -12,7 +9,13 @@ export const GET: RequestHandler = ({ params }) => {
         return new Response("Bad Request", { status: 400 });
     }
 
-    const degree = degrees.find(d => d.id === id);
+    const statement = db.prepare(`
+        SELECT id, name
+        FROM degrees
+        WHERE id = ?
+    `);
+
+    const degree = statement.get(id);
 
     if (!degree) {
         return new Response("Degree not found", { status: 404 });
@@ -28,13 +31,16 @@ export const DELETE: RequestHandler = ({ params }) => {
         return new Response("Bad Request", { status: 400 });
     }
 
-    const exists = degrees.some(d => d.id === id);
+    const statement = db.prepare(`
+        DELETE FROM degrees
+        WHERE id = ?
+    `);
 
-    if (!exists) {
+    const result = statement.run(id);
+
+    if (result.changes === 0) {
         return new Response("Degree not found", { status: 404 });
     }
-
-    degrees = degrees.filter(d => d.id !== id);
 
     return new Response("Degree deleted", { status: 200 });
 };
