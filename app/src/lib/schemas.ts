@@ -6,3 +6,7 @@ export const ClassSchema = z.object({
     link: z.url(),
     courseId: z.number()
 });
+
+export const ClassUpdateSchema = ClassSchema.extend({
+    id: z.number().int()
+});
