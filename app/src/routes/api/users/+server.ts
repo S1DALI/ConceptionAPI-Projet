@@ -1,4 +1,3 @@
-// src/routes/api/users/+server.ts
 import db from '$lib/db';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
@@ -22,6 +21,9 @@ export const POST: RequestHandler = async ({ request }) => {
         VALUES (?, ?, ?, ?, ?, ?)
     `);
     const result = stmt.run(parsed.data.firstName, parsed.data.lastName, parsed.data.email, parsed.data.role, parsed.data.password, parsed.data.degreeId);
+    if(result.changes === 0){
+        return new Response("Insertion failed", { status: 400 });
+    }
 
     return json(result, { status: 201 });
 }
