@@ -32,7 +32,7 @@ db.exec(`
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         firstName TEXT NOT NULL,
         lastName TEXT NOT NULL,
-        email TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE,
         role INT NOT NULL,
         password TEXT NOT NULL,
         degreeId INT NOT NULL,
