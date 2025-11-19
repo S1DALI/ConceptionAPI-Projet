@@ -18,11 +18,20 @@ export async function PATCH({ request, params }){
         return json({ error: 'User not found' }, { status: 404 });
     }
 
-    const updateDegree = db.prepare('UPDATE users SET degreeId = ? WHERE id = ?').run(degreeId, userId);
-    if(updateDegree.changes === 0){
-        return new Response("Error while updating degree Request", { status: 500 });
-    }
+    try{
+        const updateDegree = db.prepare('UPDATE users SET degreeId = ? WHERE id = ?').run(degreeId, userId);
+    } catch (err: any){
 
+        if (err.message.includes("FOREIGN KEY")) {
+            return new Response("Foreign key constraint failed", { status: 400 });
+        }
+
+         if (err.message.includes("constraint")) {
+            return new Response("Constraint violation", { status: 400 });
+        }
+
+        return new Response("Internal Server Error", { status: 500 });
+    }
     user = db.prepare(`
         SELECT id, firstName, lastName, email, role, degreeId 
         FROM users WHERE id = ?
