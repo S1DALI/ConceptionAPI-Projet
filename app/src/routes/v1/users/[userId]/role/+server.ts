@@ -8,7 +8,7 @@ export async function PATCH({ request, params }){
     const { role } = data;
 
     const parsed = UserUpdateRoleSchema.safeParse(data);
-    if(!parsed){
+    if(!parsed.success){
         return new Response("Bad Request", { status: 400 });
     }
 

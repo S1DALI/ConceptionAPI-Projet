@@ -8,7 +8,7 @@ export async function PATCH({ request, params }){
     const { degreeId } = data;
 
     const parsed = UserUpdateDegreeSchema.safeParse(data);
-    if(!parsed){
+    if(!parsed.success){
         return new Response("Bad Request", { status: 400 });
     }
 
