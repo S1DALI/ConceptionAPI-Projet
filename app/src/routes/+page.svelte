@@ -7,17 +7,17 @@
         message = data.message;
     }
 
-	let message2 = '';
+    let message2 = '';
 
-	async function sendMessage() {
-		const res = await fetch('/api/hello', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ message: 'message pour le back !' })
-		});
-		const data = await res.json();
-		message2 = JSON.stringify(data);
-	}
+    async function sendMessage() {
+        const res = await fetch('/api/hello', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: 'message pour le back !' })
+        });
+        const data = await res.json();
+        message2 = JSON.stringify(data);
+    }
 
 </script>
 
