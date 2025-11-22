@@ -34,8 +34,9 @@ db.exec(`
         lastName TEXT NOT NULL,
         email TEXT NOT NULL UNIQUE,
         role INT NOT NULL,
-        password TEXT NOT NULL,
+        password TEXT,
         degreeId INT NOT NULL,
+				googleId TEXT UNIQUE,
         FOREIGN KEY (degreeId) REFERENCES degrees(id)
     );
 `);
@@ -62,4 +63,59 @@ const insertUser = db.prepare(`
 `);
 
 insertUser.run('Admin', 'System', 'admin@univ.fr', 0, 'admin123', 1);
+
+export function getUserByEmail(email: string): any {
+	const stmt = db.prepare('SELECT * FROM users WHERE email = ?');
+	const user = stmt.get(email) as any;
+	if (!user) return null;
+
+	return {
+		id: user.id,
+		firstname: user.firstName,
+		lastname: user.lastName,
+		email: user.email,
+		degreeId: user.degreeId,
+		role: user.role,
+		googleId: user.googleId
+	};
+}
+
+export function getUserByGoogleId(googleId: string): any {
+	const stmt = db.prepare('SELECT * FROM users WHERE googleId = ?');
+	const user = stmt.get(googleId) as any;
+	if (!user) return null;
+
+	return {
+		id: user.id,
+		firstname: user.firstName,
+		lastname: user.lastName,
+		email: user.email,
+		degreeId: user.degreeId,
+		role: user.role,
+		googleId: user.googleId
+	};
+}
+
+export function createOrUpdateUserFromGoogle(data: {
+	email: string;
+	firstName: string;
+	lastName: string;
+	googleId: string;
+}): any {
+	const existingUser = getUserByEmail(data.email) || getUserByGoogleId(data.googleId);
+
+	if (existingUser) {
+		const stmt = db.prepare('UPDATE users SET googleId = ? WHERE email = ?');
+		stmt.run(data.googleId, data.email);
+		return getUserByEmail(data.email);
+	} else {
+		const stmt = db.prepare(`
+            INSERT INTO users (firstName, lastName, email, googleId, role, password, degreeId)
+            VALUES (?, ?, ?, ?, 0, NULL, NULL)
+        `);
+		stmt.run(data.firstName, data.lastName, data.email, data.googleId);
+		return getUserByEmail(data.email);
+	}
+}
+
 export default db;
