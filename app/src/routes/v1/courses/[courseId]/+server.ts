@@ -2,10 +2,6 @@ import { json, error } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
 import { db } from "$lib/db";
 import { checkAuth } from '../+server';
-let courses = [
-	{ id: 12, name: "Introduction to Algorithms", degreeId: 1 },
-	{ id: 13, name: "Data Structures", degreeId: 1 }
-];
 
 
 export async function DELETE({ params, locals }: RequestEvent) {
