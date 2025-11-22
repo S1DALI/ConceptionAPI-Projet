@@ -17,6 +17,7 @@ db.exec(`
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         degreeId INT NOT NULL,
+        description TEXT,
         FOREIGN KEY (degreeId) REFERENCES degrees(id)
     );
 

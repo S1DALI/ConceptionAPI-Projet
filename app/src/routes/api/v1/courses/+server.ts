@@ -1,9 +1,9 @@
 // POST et PUT sur le endpoint /v1/courses
 import { json, error } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
-import { db } from "$lib/db";
+import db from "$lib/db";
 
-export function checkAuth(locals: any) {
+function checkAuth(locals: any) {
     const sessionUser = locals.user;
 
     if (!sessionUser) throw error(401, "Unauthorized");
@@ -12,11 +12,11 @@ export function checkAuth(locals: any) {
 
     if (!user) throw error(401, "Unauthorized");
 
-    const allowed = ["admin", "teacher", "class_representative"]; // a voir je sais pas comment on gère les rôles
+    /*const allowed = ["admin", "teacher", "class_representative"]; // a voir je sais pas comment on gère les rôles
 
     if (!allowed.includes(user.role)) {
         throw error(403, "Forbidden");
-    }
+    }*/
 
     return user;
 }
