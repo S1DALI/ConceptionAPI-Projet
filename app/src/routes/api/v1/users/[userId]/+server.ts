@@ -20,12 +20,11 @@ export function GET({ params }) {
 export function DELETE({ params }) {
     const { userId } = params;
 
-    const user = db.prepare('SELECT id FROM users WHERE id = ?').get(userId);
+    const info = db.prepare('DELETE FROM users WHERE id = ?').run(userId);
     
-    if (!user) {
+    if (info.changes === 0) {
         return json({ error: 'User not found' }, { status: 404 });
     }
-
-    db.prepare('DELETE FROM users WHERE id = ?').run(userId);
+    
     return json({ message: 'User deleted successfully', status : 200 });
 }

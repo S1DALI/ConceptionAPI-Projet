@@ -13,7 +13,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const parsed = UserSchema.safeParse(data);
 
     if(!parsed.success){
-        return new Response("Bad Request", { status: 400 });
+        return json({ message: "Bad Request" }, { status: 400 });
     }
 
     try {
@@ -36,18 +36,14 @@ export const POST: RequestHandler = async ({ request }) => {
     } catch (err: any) {
 
         if (err.message.includes("FOREIGN KEY")) {
-            return new Response("Foreign key constraint failed", { status: 400 });
+            return json({ message: "Invalid degree ID provided" }, { status: 400 });
         }
 
         if (err.message.includes("UNIQUE")) {
-            return new Response("Email already exists", { status: 409 });
+            return json({ message: "Email already exists" }, { status: 409 });
         }
 
-        if (err.message.includes("constraint")) {
-            return new Response("Constraint violation", { status: 400 });
-        }
-
-        return new Response("Internal Server Error", { status: 500 });
+        return json({ message: "Internal Server Error" }, { status: 500 });
     }
 }
 

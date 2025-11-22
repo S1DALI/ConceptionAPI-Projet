@@ -9,7 +9,7 @@ export async function PATCH({ request, params }){
 
     const parsed = UserUpdateRoleSchema.safeParse(data);
     if(!parsed.success){
-        return new Response("Bad Request", { status: 400 });
+        return json({ message: "Bad Request" } , { status: 400 });
     }
 
     let user = db.prepare('SELECT id FROM users WHERE id = ?').get(userId);
@@ -18,10 +18,7 @@ export async function PATCH({ request, params }){
         return json({ error: 'User not found' }, { status: 404 });
     }
 
-    const updateDegree = db.prepare('UPDATE users SET role = ? WHERE id = ?').run(role, userId);
-    if(updateDegree.changes === 0){
-        return new Response("Error while updating role Request", { status: 500 });
-    }
+    const updateRole = db.prepare('UPDATE users SET role = ? WHERE id = ?').run(role, userId);
 
     user = db.prepare(`
         SELECT id, firstName, lastName, email, role, degreeId 
