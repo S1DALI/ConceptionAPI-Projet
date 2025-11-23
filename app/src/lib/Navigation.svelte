@@ -1,9 +1,9 @@
 <script lang="ts">
     import { page } from '$app/stores';
+    import { LogOut } from '@lucide/svelte';
     
     let { user } = $props();
 </script>
-
 <nav class="sticky top-0 z-50 bg-indigo-600 shadow-lg">
     <div class="mx-auto max-w-6xl px-6 py-4">
         <div class="flex items-center justify-between">
@@ -48,6 +48,12 @@
                             alt="Profile"
                             class="h-10 w-10 rounded-full border-2 border-white"
                         />
+                        <!-- Logout button -->
+                            <form method="POST" action="/api/v1/users/logout">
+                                <button type="submit" class="ml-4 px-3 py-1 rounded bg-indigo-800 text-white hover:bg-red-600 transition flex items-center gap-2">
+                                    <LogOut />
+                                </button>
+                            </form>
                     </div>
                 {/if}
             </div>
