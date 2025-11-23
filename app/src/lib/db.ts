@@ -36,8 +36,8 @@ db.exec(`
         email TEXT NOT NULL UNIQUE,
         role INT NOT NULL,
         password TEXT,
-        degreeId INT NOT NULL,
-				googleId TEXT UNIQUE,
+        degreeId INT,
+		googleId TEXT UNIQUE,
         FOREIGN KEY (degreeId) REFERENCES degrees(id)
     );
 `);

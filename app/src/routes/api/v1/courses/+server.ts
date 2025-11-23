@@ -1,4 +1,3 @@
-// POST et PUT sur le endpoint /v1/courses
 import { json, error } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
 import db from "$lib/db";
