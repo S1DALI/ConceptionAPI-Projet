@@ -28,7 +28,7 @@ async function getUserData(access_token: string): Promise<UserData> {
 }
 
 export const GET = async ({ url }: { url: URL }) => {
-	const redirectURL: string = 'http://localhost:5173/v1/users/oauth';
+	const redirectURL: string = 'http://localhost:5173/api/v1/users/oauth';
 	const code: string | null = url.searchParams.get('code');
 
 	console.log('returned code', code);

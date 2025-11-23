@@ -4,7 +4,7 @@ import { SECRET_CLIENT_ID, SECRET_CLIENT_SECRET } from '$env/static/private';
 
 export const actions: import('@sveltejs/kit').Actions = {
 	OAuth2: async ({}: import('@sveltejs/kit').RequestEvent) => {
-		const redirectURL: string = 'http://localhost:5173/v1/users/oauth';
+		const redirectURL: string = 'http://localhost:5173/api/v1/users/oauth';
 
 		console.log('id', SECRET_CLIENT_ID);
 
