@@ -22,28 +22,6 @@
 				<p class="mb-4 text-gray-600">Consultez les diplômes et parcours disponibles</p>
 				<span class="inline-block rounded bg-blue-600 px-4 py-2 text-white">Voir la liste →</span>
 			</a>
-
-			<!-- Courses Card -->
-			<a
-				href="/courses"
-				class="rounded-lg bg-white p-8 shadow-lg transition hover:scale-105 hover:shadow-xl"
-			>
-				<div class="mb-4 text-4xl">📚</div>
-				<h2 class="mb-2 text-2xl font-bold text-gray-900">Matières</h2>
-				<p class="mb-4 text-gray-600">Explorez l'ensemble des cours et modules disponibles</p>
-				<span class="inline-block rounded bg-green-600 px-4 py-2 text-white">Voir la liste →</span>
-			</a>
-
-			<!-- Classes Card -->
-			<a
-				href="/classes"
-				class="rounded-lg bg-white p-8 shadow-lg transition hover:scale-105 hover:shadow-xl"
-			>
-				<div class="mb-4 text-4xl">🏫</div>
-				<h2 class="mb-2 text-2xl font-bold text-gray-900">Cours</h2>
-				<p class="mb-4 text-gray-600">Retrouvez les séances de classe et ressources</p>
-				<span class="inline-block rounded bg-purple-600 px-4 py-2 text-white">Voir la liste →</span>
-			</a>
 		</div>
 	</div>
 </div>

@@ -31,26 +31,6 @@
 				>
 					Diplômes
 				</a>
-				<a
-					href="/courses"
-					class="text-white transition hover:text-indigo-100 {$page.url.pathname.includes(
-						'/courses'
-					)
-						? 'border-b-2 border-white'
-						: ''}"
-				>
-					Matières
-				</a>
-				<a
-					href="/classes"
-					class="text-white transition hover:text-indigo-100 {$page.url.pathname.includes(
-						'/classes'
-					)
-						? 'border-b-2 border-white'
-						: ''}"
-				>
-					Cours
-				</a>
 			</div>
 		</div>
 	</div>

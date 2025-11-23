@@ -42,26 +42,20 @@
 					<!-- Expanded Content -->
 					{#if expandedDegree === degree.id}
 						<div class="bg-gray-50 px-6 py-6">
-							<h3 class="mb-4 text-lg font-semibold text-gray-900">Cours du programme :</h3>
+							<h3 class="mb-4 text-lg font-semibold text-gray-900">Matières du programme :</h3>
 							<div class="space-y-3">
 								{#each getCoursesForDegree(degree.id) as course (course.id)}
-									<div class="rounded-lg border border-gray-200 bg-white p-4">
-										<div class="flex items-start justify-between">
-											<div>
-												<h4 class="font-semibold text-gray-900">{course.name}</h4>
-												<p class="mt-1 text-sm text-gray-600">{course.description}</p>
-											</div>
-											<span
-												class="inline-block rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-700"
-											>
-												ID: {course.id}
-											</span>
-										</div>
-									</div>
+									<a
+										href={`/${degree.id}/courses?course=${course.id}`}
+										class="block rounded-lg border border-gray-200 bg-white p-4 transition hover:bg-indigo-50"
+									>
+										<h4 class="font-semibold text-gray-900">{course.name}</h4>
+										<p class="mt-1 text-sm text-gray-600">{course.description}</p>
+									</a>
 								{/each}
 
 								{#if getCoursesForDegree(degree.id).length === 0}
-									<p class="italic text-gray-500">Aucun cours pour ce diplôme pour le moment.</p>
+									<p class="italic text-gray-500">Aucune matière pour ce diplôme pour le moment.</p>
 								{/if}
 							</div>
 						</div>
