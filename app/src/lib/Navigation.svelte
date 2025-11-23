@@ -22,16 +22,10 @@
 					Accueil
 				</a>
 				<a
-					href="/users"
-					class="text-white transition hover:text-indigo-100 {$page.url.pathname.includes('/users')
-						? 'border-b-2 border-white'
-						: ''}"
-				>
-					Utilisateurs
-				</a>
-				<a
 					href="/degrees"
-					class="text-white transition hover:text-indigo-100 {$page.url.pathname.includes('/degrees')
+					class="text-white transition hover:text-indigo-100 {$page.url.pathname.includes(
+						'/degrees'
+					)
 						? 'border-b-2 border-white'
 						: ''}"
 				>
@@ -39,22 +33,25 @@
 				</a>
 				<a
 					href="/courses"
-					class="text-white transition hover:text-indigo-100 {$page.url.pathname.includes('/courses')
+					class="text-white transition hover:text-indigo-100 {$page.url.pathname.includes(
+						'/courses'
+					)
+						? 'border-b-2 border-white'
+						: ''}"
+				>
+					Matières
+				</a>
+				<a
+					href="/classes"
+					class="text-white transition hover:text-indigo-100 {$page.url.pathname.includes(
+						'/classes'
+					)
 						? 'border-b-2 border-white'
 						: ''}"
 				>
 					Cours
 				</a>
-				<a
-					href="/classes"
-					class="text-white transition hover:text-indigo-100 {$page.url.pathname.includes('/classes')
-						? 'border-b-2 border-white'
-						: ''}"
-				>
-					Séances
-				</a>
 			</div>
 		</div>
 	</div>
 </nav>
-
