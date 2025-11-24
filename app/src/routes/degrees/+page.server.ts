@@ -1,15 +1,22 @@
 import { z } from 'zod';
 import { DegreeSchema, CourseSchema } from '$lib/schemas';
-import { getAllDegrees, getCourses } from '$lib/db';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async (event) => {
   try {
-    const degreesRaw = getAllDegrees();
-    const coursesRaw = getCourses();
+    const degreesRes = await event.fetch('/api/v1/degrees');
 
-    const degrees = z.array(DegreeSchema).parse(degreesRaw);
-    const courses = z.array(CourseSchema).parse(coursesRaw);
+    const degrees = z.array(DegreeSchema).parse(await degreesRes.json());
+
+    // Charger tous les courses
+    const courses: Array<any> = [];
+    for (const degree of degrees) {
+      const res = await event.fetch(`/api/v1/degrees/${degree.id}/courses`);
+      if (res.ok) {
+        const degreeCourses = z.array(CourseSchema).parse(await res.json());
+        courses.push(...degreeCourses);
+      }
+    }
 
     return {
       degrees,
