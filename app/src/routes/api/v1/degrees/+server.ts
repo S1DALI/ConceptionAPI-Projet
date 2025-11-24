@@ -1,6 +1,7 @@
 import type { RequestHandler } from "@sveltejs/kit";
 import { DegreeSchema } from "$lib/schemas";
 import { DegreeUpdateSchema } from "$lib/schemas";
+import { canEditDegree } from "$lib/server/auth";
 import db from "$lib/db";
 
 
@@ -9,12 +10,22 @@ export const GET: RequestHandler = () => {
     return new Response(JSON.stringify(rows), { status: 200 });
 };
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
+    const user = locals.user;
+
+    if (!user) {
+        return new Response("Unauthorized", { status: 401 });
+    }
+
     const json = await request.json();
     const parsed = DegreeSchema.safeParse(json);
 
     if (!parsed.success) {
         return new Response("Bad Request", { status: 400 });
+    }
+
+    if (!canEditDegree(user)) {
+        return new Response("Unauthorized", { status: 401 });
     }
 
     const statement = db.prepare(`
@@ -32,12 +43,22 @@ export const POST: RequestHandler = async ({ request }) => {
     return new Response(JSON.stringify(created), { status: 200 });
 };
 
-export const PUT: RequestHandler = async ({ request }) => {
+export const PUT: RequestHandler = async ({ request, locals }) => {
+    const user = locals.user;
+
+    if (!user) {
+        return new Response("Unauthorized", { status: 401 });
+    }
+
     const json = await request.json();
     const parsed = DegreeUpdateSchema.safeParse(json);
 
     if (!parsed.success) {
         return new Response("Bad Request", { status: 400 });
+    }
+
+    if (!canEditDegree(user)) {
+        return new Response("Unauthorized", { status: 401 });
     }
 
     const { id, name } = parsed.data;
