@@ -10,7 +10,7 @@ export const GET: RequestHandler = ({ params }) => {
     }
 
     const statement = db.prepare(`
-        SELECT id, name, degreeId
+        SELECT id, name, degreeId, description
         FROM courses
         WHERE degreeId = ?
     `);
