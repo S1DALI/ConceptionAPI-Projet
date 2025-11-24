@@ -36,6 +36,7 @@ info:
 
 servers:
   - url: https://www.myclasses.com/api
+  - url: https://www.myclasses.com/test/api
 
 tags:
   - name: Degree
@@ -66,6 +67,14 @@ components:
       required:
         - id
         - name
+
+    DegreeCreator:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
     Course:
       type: object
       properties:
@@ -80,6 +89,19 @@ components:
           description: "Identifier of the degree this course belongs to"
       required:
         - id
+        - degreeId
+        - name
+
+    CourseCreator:
+      type: object
+      properties:
+        name:
+          type: string
+        degreeId:
+          type: integer
+          format: int64
+          description: "Identifier of the degree this course belongs to"
+      required:
         - degreeId
         - name
     Class:
@@ -100,6 +122,23 @@ components:
           description: "Identifier of the course this class belongs to"
       required:
         - id
+        - name
+        - link
+        - courseId
+    ClassCreator:
+      type: object
+      properties:
+        name:
+          type: string
+        link:
+          type: string
+          format: uri
+          description: "URL or resource link for the class session or resource"
+        courseId:
+          type: integer
+          format: int64
+          description: "Identifier of the course this class belongs to"
+      required:
         - name
         - link
         - courseId
@@ -125,6 +164,30 @@ components:
           description: "Role (student 0, class representative 1, teacher 2, admin 3)"
       required:
         - id
+        - firstname
+        - lastname
+        - email
+        - degreeId
+        - role
+
+    UserCreator:
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+          format: email
+        degreeId:
+          type: integer
+          format: int64
+        role:
+          type: integer
+          format: int64
+          description: "Role (student 0, class representative 1, teacher 2, admin 3)"
+      required:
         - firstname
         - lastname
         - email
@@ -178,12 +241,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-              required:
-                - name
+              $ref: "#/components/schemas/DegreeCreator"
             examples:
               json-example:
                 summary: JSON example
@@ -378,16 +436,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                degreeId:
-                  type: integer
-                  format: int64
-              required:
-                - name
-                - degreeId
+              $ref: "#/components/schemas/CourseCreator"
             examples:
               json-example:
                 value:
@@ -535,19 +584,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                link:
-                  type: string
-                courseId:
-                  type: integer
-                  format: int64
-              required:
-                - name
-                - link
-                - courseId
+              $ref: "#/components/schemas/ClassCreator"
             examples:
               json-example:
                 value:
@@ -690,21 +727,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                firstname:
-                  type: string
-                lastname:
-                  type: string
-                email:
-                  type: string
-                password:
-                  type: string
-              required:
-                - firstname
-                - lastname
-                - email
-                - password
+              $ref: "#/components/schemas/UserCreator"
             examples:
               json-example:
                 value:
@@ -791,7 +814,7 @@ paths:
                       role: 0
 
   /v1/users/login:
-    get:
+    post:
       tags:
         - User
       summary: Logs user into the system.
@@ -839,7 +862,7 @@ paths:
           description: Invalid email/password supplied
 
   /v1/users/logout:
-    get:
+    post:
       tags:
         - User
       summary: Logs out current logged in user session.
@@ -899,18 +922,16 @@ paths:
         "404":
           description: User not found
 
-  /v1/users/{userId}/role:
     patch:
       tags:
         - User
-      summary: Update the role of a user.
+      summary: Update a user.
       parameters:
         - $ref: "#/components/parameters/userId"
       security:
         - bearerAuth: []
       description: |
-        Update the user's role. Can be used by admins but also by teachers who want to designate a student as class representative.
-        This operation is idempotent.
+        Update the user. Can be used by admins but also by teachers. This operation is idempotent.
       requestBody:
         required: true
         content:
@@ -923,10 +944,12 @@ paths:
                   format: int64
               required:
                 - role
+                - degreeId
             examples:
               json-example:
                 value:
                   role: 1
+                  degreeId: 1
           application/xml:
             schema:
               type: object
@@ -945,62 +968,7 @@ paths:
                   </RoleUpdate>
       responses:
         "200":
-          description: Successful update of role
-        "400":
-          description: Bad Request
-        "401":
-          description: Unauthorized
-        "404":
-          description: User not found
-
-  /v1/users/{userId}/degreeId:
-    patch:
-      tags:
-        - User
-      summary: Update the degree of a user.
-      parameters:
-        - $ref: "#/components/parameters/userId"
-      security:
-        - bearerAuth: []
-      description: |
-        Update the user's degree. If the user is a class representative and their degree changes, they will be reassigned as a student.
-        Security: Token JWT (professor and admin only).
-        This operation is idempotent.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                degreeId:
-                  type: integer
-                  format: int64
-              required:
-                - degreeId
-            examples:
-              json-example:
-                value:
-                  degreeId: 1
-          application/xml:
-            schema:
-              type: object
-              xml:
-                name: DegreeUpdate
-              properties:
-                degreeId:
-                  type: integer
-              required:
-                - degreeId
-            examples:
-              xml-example:
-                value: |
-                  <DegreeUpdate>
-                    <degreeId>1</degreeId>
-                  </DegreeUpdate>
-      responses:
-        "200":
-          description: Successful update of degree
+          description: Successful update of user
         "400":
           description: Bad Request
         "401":
