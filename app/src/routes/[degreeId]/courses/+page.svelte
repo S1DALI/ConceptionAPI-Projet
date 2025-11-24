@@ -9,7 +9,7 @@
 <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
 	<div class="mx-auto max-w-6xl px-6">
 		<h1 class="mb-4 text-4xl font-bold text-gray-900">
-			{data.degrees.find((d) => d.id === data.degreeId)?.name}
+			{data.degree.name}
 		</h1>
 
 		<!-- Liste des cours -->

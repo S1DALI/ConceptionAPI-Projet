@@ -6,29 +6,27 @@ export const load: PageServerLoad = async ({ fetch, params, url }) => {
   const degreeId = Number(params.degreeId);
   const courseId = Number(url.searchParams.get('course'));
 
-  const degreesRes = await fetch('/api/v1/degrees');
-  const degrees = z.array(DegreeSchema).parse(await degreesRes.json());
-  
-  // Charger tous les courses
+  const degreeRes = await fetch(`/api/v1/degrees/${degreeId}`);
+  const degree = DegreeSchema.parse(await degreeRes.json());
+
+  // Charger toutes les courses du degree sélectionné
   const courses: Array<any> = [];
-  for (const degree of degrees) {
-    const res = await fetch(`/api/v1/degrees/${degree.id}/courses`);
-    if (res.ok) {
-      const degreeCourses = z.array(CourseSchema).parse(await res.json());
-      courses.push(...degreeCourses);
-    }
+  const res = await fetch(`/api/v1/degrees/${degreeId}/courses`);
+  if (res.ok) {
+    const degreeCourses = CourseSchema.array().parse(await res.json());
+    courses.push(...degreeCourses);
   }
 
-  let classes : Array<any> = [];
+  let classes: Array<any> = [];
   if (courseId) {
     const classesRes = await fetch(`/api/v1/courses/${courseId}/classes`)
-    classes = z.array(ClassSchema).parse(await classesRes.json());
+    classes = ClassSchema.array().parse(await classesRes.json());
   }
 
   return {
     degreeId,
     courseId,
-    degrees,
+    degree,
     courses,
     classes
   };
