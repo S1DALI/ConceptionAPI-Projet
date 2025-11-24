@@ -911,7 +911,7 @@ paths:
         - $ref: "#/components/parameters/userId"
       security:
         - bearerAuth: []
-      description: "Delete a user. Security: Token JWT (user himself and admin only)."
+      description: "Delete a user. Security: Token JWT (Admin only)."
       responses:
         "200":
           description: User successfully deleted
@@ -931,7 +931,7 @@ paths:
       security:
         - bearerAuth: []
       description: |
-        Update the user. Can be used by admins but also by teachers. This operation is idempotent.
+        Update the user (Admin only). This operation is idempotent.
       requestBody:
         required: true
         content:
