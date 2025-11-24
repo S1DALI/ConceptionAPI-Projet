@@ -11,7 +11,6 @@ export const handle: Handle = async ({ event, resolve }) => {
       
       if (decoded && decoded.sub) {
         event.locals.user = decoded;
-        console.log('User authenticated:', decoded.email || decoded.sub);
       }
     } catch (error) {
       console.error('Token decode failed:', error);

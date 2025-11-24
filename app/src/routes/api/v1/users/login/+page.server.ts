@@ -15,9 +15,10 @@ export const actions: Actions = {
 
     const authorizeUrl = oAuth2Client.generateAuthUrl({
       access_type: 'offline',
-      prompt: 'consent',
+      prompt: 'select_account',
+			include_granted_scopes: false,
 
-      scope: [
+			scope: [
         'openid',
         'email',
         'profile',

@@ -56,8 +56,6 @@ export async function POST(): Promise<Response> {
     `);
 
     let result = query.all();
-    
 
-    console.log(result);
     return json({message : 'je test le backend'});
   }

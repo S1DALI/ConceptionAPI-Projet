@@ -47,9 +47,7 @@ export const GET = async ({ url, cookies }: { url: URL; cookies: any }) => {
     
     const userCredentials: Credentials = oAuth2Client.credentials;
     const userData: UserData = await getUserData(userCredentials.access_token!);
-    
-    console.log('User data:', userData);
-    
+
     if (!userData.email) {
       throw new Error('Email not provided by Google');
     }
@@ -60,9 +58,7 @@ export const GET = async ({ url, cookies }: { url: URL; cookies: any }) => {
       lastName: userData.family_name || '',
       googleId: userData.sub
     });
-    
-    console.log('User saved/updated:', user);
-    
+
     // Stocker le token en cookie
     cookies.set('authToken', tokens.id_token || tokens.access_token, {
       path: '/',
@@ -71,9 +67,7 @@ export const GET = async ({ url, cookies }: { url: URL; cookies: any }) => {
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7
     });
-    
-    console.log('Token stored in cookie');
-    
+
     throw redirect(303, '/dashboard');
     
   } catch (err: any) {
