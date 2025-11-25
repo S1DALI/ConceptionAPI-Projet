@@ -1,15 +1,34 @@
 import type { RequestHandler } from "@sveltejs/kit";
 import { ClassSchema } from "$lib/schemas";
 import { ClassUpdateSchema } from "$lib/schemas";
+import { canEditClass } from "$lib/server/auth";
 import db from "$lib/db";
 
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
+    const user = locals.user;
+
+    if (!user) {
+        return new Response("Unauthorized", { status: 401 });
+    }
+
     const data = await request.json();
     const parsed = ClassSchema.safeParse(data);
 
     if (!parsed.success) {
         return new Response("Bad Request", { status: 400 });
+    }
+
+    const courseStmt = db.prepare(`
+        SELECT id FROM courses WHERE id = ?
+    `);
+    const course = courseStmt.get(parsed.data.courseId);
+    if (!course) {
+        return new Response("Course not found", { status: 404 });
+    }
+
+    if (!canEditClass(user, parsed.data.courseId)) {
+        return new Response("Unauthorized", { status: 401 });
     }
 
     const statement = db.prepare(`
@@ -29,12 +48,30 @@ export const POST: RequestHandler = async ({ request }) => {
     return new Response(JSON.stringify(createdClass), { status: 200 });
 };
 
-export const PUT: RequestHandler = async ({ request }) => {
+export const PUT: RequestHandler = async ({ request, locals }) => {
+    const user = locals.user;
+
+    if (!user) {
+        return new Response("Unauthorized", { status: 401 });
+    }
+
     const data = await request.json();
     const parsed = ClassUpdateSchema.safeParse(data);
 
     if (!parsed.success) {
         return new Response("Bad Request", { status: 400 });
+    }
+
+    const courseStmt = db.prepare(`
+        SELECT id FROM courses WHERE id = ?
+    `);
+    const course = courseStmt.get(parsed.data.courseId);
+    if (!course) {
+        return new Response("Course not found", { status: 404 });
+    }
+
+    if (!canEditClass(user, parsed.data.courseId)) {
+        return new Response("Unauthorized", { status: 401 });
     }
 
     const { id, name, link, courseId } = parsed.data;

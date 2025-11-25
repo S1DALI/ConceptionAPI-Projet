@@ -95,14 +95,18 @@ components:
           type: integer
           format: int64
           description: "Identifier of the degree this course belongs to"
+        description:
+          type: string
       required:
         - id
         - degreeId
         - name
+        - description
       example:
         id: 14
         name: "Operating Systems"
         degreeId: 1
+        description: "Windows file system"
     CourseCreator:
       type: object
       description: An object used to create a Course
@@ -114,12 +118,16 @@ components:
           type: integer
           format: int64
           description: "Identifier of the degree this course belongs to"
+        description:
+          type: string
       required:
         - degreeId
         - name
+        - description
       example:
         name: "Operating Systems"
         degreeId: 1
+        description: "Windows file system"
     Class:
       type: object
       description: An object which represent a Class
@@ -483,6 +491,7 @@ paths:
                 value:
                   name: "Operating Systems"
                   degreeId: 1
+                  description: "Windows file system course."
           application/xml:
             schema:
               type: object
@@ -493,15 +502,19 @@ paths:
                   type: string
                 degreeId:
                   type: integer
+                description:
+                  type: string
               required:
                 - name
                 - degreeId
+                - description
             examples:
               xml-example:
                 value: |
                   <Course>
                     <name>Operating Systems</name>
                     <degreeId>1</degreeId>
+                    <description>Windows file system course.</degreeId>
                   </Course>
       responses:
         "200":
@@ -516,10 +529,13 @@ paths:
                     id: 14
                     name: "Operating Systems"
                     degreeId: 1
+                    description: "Windows file system course."
         "400":
           description: Bad Request
         "401":
           description: Unauthorized
+        "404":
+          description: Degree not found
     put:
       tags:
         - Course
@@ -539,6 +555,7 @@ paths:
                   id: 12
                   name: "Introduction to Algorithms"
                   degreeId: 1
+                  description: "Recursion"
           application/xml:
             schema:
               $ref: "#/components/schemas/Course"
@@ -549,6 +566,7 @@ paths:
                     <id>12</id>
                     <name>Introduction to Algorithms</name>
                     <degreeId>1</degreeId>
+                    <description>Recursion</description>
                   </Course>
       responses:
         "200":
@@ -558,7 +576,7 @@ paths:
         "401":
           description: Unauthorized
         "404":
-          description: Course not found
+          description: Course or degree not found
   /v1/courses/{courseId}:
     delete:
       tags:
@@ -670,6 +688,8 @@ paths:
           description: Bad Request
         "401":
           description: Unauthorized
+        "404":
+          description: Course not found
     put:
       tags:
         - Class
@@ -710,7 +730,7 @@ paths:
         "401":
           description: Unauthorized
         "404":
-          description: Class not found
+          description: Class or course not found
 
   /v1/classes/{classId}:
     get:
@@ -822,6 +842,8 @@ paths:
                     role: 0
         "400":
           description: Bad Request
+        "409":
+          description: Email already exists
     get:
       tags:
         - User
@@ -853,6 +875,8 @@ paths:
                       email: "anthony.jones@example.com"
                       degreeId: 1
                       role: 0
+        "401":
+          description: Unauthorized
 
   /v1/users/login:
     post:
@@ -942,6 +966,8 @@ paths:
                     role: 0
         "400":
           description: Bad Request
+        "401":
+          description: Unauthorized
         "404":
           description: User not found
     delete:
@@ -952,7 +978,7 @@ paths:
         - $ref: "#/components/parameters/userId"
       security:
         - bearerAuth: []
-      description: "Delete a user. Security: Token JWT (user himself and admin only)."
+      description: "Delete a user. Security: Token JWT (Admin only)."
       responses:
         "200":
           description: User successfully deleted
@@ -972,7 +998,7 @@ paths:
       security:
         - bearerAuth: []
       description: |
-        Update the user. Can be used by admins but also by teachers. This operation is idempotent.
+        Update the user (Admin only). This operation is idempotent.
       requestBody:
         required: true
         content:

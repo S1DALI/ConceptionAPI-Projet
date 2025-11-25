@@ -1,52 +1,67 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
+import { canEditCourse } from "$lib/server/auth";
 import db from "$lib/db";
-
-function checkAuth(locals: any) {
-    const sessionUser = locals.user;
-
-    if (!sessionUser) throw error(401, "Unauthorized");
-
-    const user = db.prepare("SELECT role FROM users WHERE id = ?").get(sessionUser.id);
-
-    if (!user) throw error(401, "Unauthorized");
-
-    /*const allowed = ["admin", "teacher", "class_representative"]; // a voir je sais pas comment on gère les rôles
-
-    if (!allowed.includes(user.role)) {
-        throw error(403, "Forbidden");
-    }*/
-
-    return user;
-}
 
 
 export async function POST({ request, locals }: RequestEvent) {
-    checkAuth(locals);
+    const user = locals.user;
+
+    if (!user) {
+        return new Response("Unauthorized", { status: 401 });
+    }
 
     const body = await request.json();
-    const { name, degreeId } = body;
+    const { name, degreeId, description } = body;
 
-    if (!name || !degreeId) throw error(400, 'Missing fields');
+    if (!name || !degreeId || !description) return new Response('Bad Request', { status: 400 });
 
-    const stmt = db.prepare("INSERT INTO courses (name, degreeId) VALUES (?, ?)");
-    const result = stmt.run(name, degreeId);
+    const degreeStmt = db.prepare(`
+        SELECT id FROM degrees WHERE id = ?
+    `);
+    const degree = degreeStmt.get(degreeId);
+    if (!degree) {
+        return new Response("Degree not found", { status: 404 });
+    }
 
-    return json({ id: result.lastInsertRowid, name, degreeId });
+    if (!canEditCourse(user, degreeId)) {
+        return new Response("Unauthorized", { status: 401 });
+    }
+
+    const stmt = db.prepare("INSERT INTO courses (name, degreeId, description) VALUES (?, ?, ?)");
+    const result = stmt.run(name, degreeId, description);
+
+    return json({ id: result.lastInsertRowid, name, degreeId, description });
 }
 
 export async function PUT({ request, locals }: RequestEvent) {
-    checkAuth(locals);
+    const user = locals.user;
+
+    if (!user) {
+        return new Response("Unauthorized", { status: 401 });
+    }
 
     const body = await request.json();
-    const { id, name, degreeId } = body;
+    const { id, name, degreeId, description } = body;
 
-    if (!id || !name || !degreeId) throw error(400, 'Invalid fields');
+    if (!id || !name || !degreeId || !description) return new Response('Bad Request', { status: 400 });
 
-    const stmt = db.prepare("UPDATE courses SET name = ?, degreeId = ? WHERE id = ?");
-    const result = stmt.run(name, degreeId, id);
+    const degreeStmt = db.prepare(`
+        SELECT id FROM degrees WHERE id = ?
+    `);
+    const degree = degreeStmt.get(degreeId);
+    if (!degree) {
+        return new Response("Degree not found", { status: 404 });
+    }
 
-    if (result.changes === 0) throw error(404, 'Course not found');
+    if (!canEditCourse(user, degreeId)) {
+        return new Response("Unauthorized", { status: 401 });
+    }
 
-    return json({ message: "Course updated" });
+    const stmt = db.prepare("UPDATE courses SET name = ?, degreeId = ?, description = ? WHERE id = ?");
+    const result = stmt.run(name, degreeId, description, id);
+
+    if (result.changes === 0) return new Response("Course not found", { status: 404 });
+
+    return new Response('Successful update of course', { status: 200 });
 }

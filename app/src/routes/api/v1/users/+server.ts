@@ -2,8 +2,19 @@ import db from '$lib/db';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 import { UserSchema } from '$lib/schemas';
+import { canEditUser } from "$lib/server/auth";
 
-export const GET: RequestHandler = async () => {
+export const GET: RequestHandler = async ({ locals }) => {
+    const user = locals.user;
+
+    if (!user) {
+        return new Response("Unauthorized", { status: 401 });
+    }
+
+    if (!canEditUser(user)) {
+        return new Response("Unauthorized", { status: 401 });
+    }
+
     const users = db.prepare("SELECT * FROM users").all();
     return json(users, { status: 200 });
 };
@@ -12,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const data = await request.json();
     const parsed = UserSchema.safeParse(data);
 
-    if(!parsed.success){
+    if (!parsed.success) {
         return json({ message: "Bad Request" }, { status: 400 });
     }
 
@@ -36,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } catch (err: any) {
 
         if (err.message.includes("FOREIGN KEY")) {
-            return json({ message: "Invalid degree ID provided" }, { status: 400 });
+            return json({ message: "Bad Request" }, { status: 400 });
         }
 
         if (err.message.includes("UNIQUE")) {

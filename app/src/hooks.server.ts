@@ -1,5 +1,6 @@
 import type { Handle } from '@sveltejs/kit';
 import { jwtDecode } from 'jwt-decode';
+import { getUserByEmail, getUserByGoogleId } from '$lib/db';
 
 export const handle: Handle = async ({ event, resolve }) => {
   const authToken = event.cookies.get('authToken');
@@ -7,10 +8,16 @@ export const handle: Handle = async ({ event, resolve }) => {
   if (authToken) {
     try {
       // Décoder le JWT sans vérifier la signature (on fait confiance à Google)
-      const decoded = jwtDecode(authToken);
-      
-      if (decoded && decoded.sub) {
-        event.locals.user = decoded;
+      const decoded = jwtDecode(authToken) as { email?: string; sub?: string };
+
+      if (decoded) {
+        let user = null;
+        if (decoded.email) {
+          user = getUserByEmail(decoded.email);
+        } else if (decoded.sub) {
+          user = getUserByGoogleId(decoded.sub);
+        }
+        if (user) event.locals.user = user;
       }
     } catch (error) {
       console.error('Token decode failed:', error);

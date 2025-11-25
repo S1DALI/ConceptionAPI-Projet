@@ -1,4 +1,5 @@
 import type { RequestHandler } from "@sveltejs/kit";
+import { canEditDegree } from "$lib/server/auth";
 import db from "$lib/db";
 
 
@@ -24,11 +25,21 @@ export const GET: RequestHandler = ({ params }) => {
     return new Response(JSON.stringify(degree), { status: 200 });
 };
 
-export const DELETE: RequestHandler = ({ params }) => {
+export const DELETE: RequestHandler = ({ params, locals }) => {
+    const user = locals.user;
+
+    if (!user) {
+        return new Response("Unauthorized", { status: 401 });
+    }
+
     const id = Number(params.degreeId);
 
     if (isNaN(id)) {
         return new Response("Bad Request", { status: 400 });
+    }
+
+    if (!canEditDegree(user)) {
+        return new Response("Unauthorized", { status: 401 });
     }
 
     const statement = db.prepare(`

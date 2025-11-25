@@ -175,7 +175,7 @@ export function createOrUpdateUserFromGoogle(data: {
     } else {
         const stmt = db.prepare(`
             INSERT INTO users (firstName, lastName, email, googleId, role, password, degreeId)
-            VALUES (?, ?, ?, ?, 0, NULL, NULL)
+            VALUES (?, ?, ?, ?, 3, NULL, NULL)
         `);
         stmt.run(data.firstName, data.lastName, data.email, data.googleId);
         return getUserByEmail(data.email);
