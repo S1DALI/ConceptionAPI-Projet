@@ -8,7 +8,7 @@ export const handle: Handle = async ({ event, resolve }) => {
   if (authToken) {
     try {
       // Décoder le JWT sans vérifier la signature (on fait confiance à Google)
-      const decoded = jwtDecode(authToken) as { email?: string; sub?: string };
+      const decoded = jwtDecode(authToken) as { email?: string; sub?: string; picture?: string };
 
       if (decoded) {
         let user = null;
@@ -17,7 +17,10 @@ export const handle: Handle = async ({ event, resolve }) => {
         } else if (decoded.sub) {
           user = getUserByGoogleId(decoded.sub);
         }
-        if (user) event.locals.user = user;
+        if (user) {
+          if (decoded.picture) user.picture = decoded.picture;
+          event.locals.user = user;
+        }
       }
     } catch (error) {
       console.error('Token decode failed:', error);

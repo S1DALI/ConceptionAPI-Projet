@@ -11,6 +11,7 @@ declare global {
 				degreeId: number | null;
 				role: number;
 				googleId: string;
+				picture?: string;
 			};
 		}
 	}
