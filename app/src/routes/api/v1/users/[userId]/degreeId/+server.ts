@@ -1,20 +1,26 @@
 import db from '$lib/db';
 import { json } from '@sveltejs/kit';
 import { UserUpdateDegreeSchema } from '$lib/schemas';
+import { canEditUser } from '$lib/server/auth';
 
-export async function PATCH({ request, params }){
+export async function PATCH({ request, params, locals }){
     const { userId } = params;
     const data = await request.json();
     const { degreeId } = data;
+    const user = locals.user;
 
     const parsed = UserUpdateDegreeSchema.safeParse(data);
     if(!parsed.success){
          return json({ message: "Bad Request" } , { status: 400 });
     }
 
-    let user = db.prepare('SELECT id FROM users WHERE id = ?').get(userId);
+    if(!canEditUser(user)) {
+        return json({ message: "Unauthorized" }, { status: 401 });
+    }
 
-    if (!user) {
+    let requestedUser = db.prepare('SELECT id FROM users WHERE id = ?').get(userId);
+
+    if (!requestedUser) {
         return json({ error: 'User not found' }, { status: 404 });
     }
 
@@ -28,9 +34,9 @@ export async function PATCH({ request, params }){
 
         return new Response("Internal Server Error", { status: 500 });
     }
-    user = db.prepare(`
+    requestedUser = db.prepare(`
         SELECT id, firstName, lastName, email, role, degreeId 
         FROM users WHERE id = ?
     `).get(userId);
-    return json(user, {status: 200});
+    return json(requestedUser, {status: 200});
 }

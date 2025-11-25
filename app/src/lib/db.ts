@@ -18,7 +18,7 @@ db.exec(`
         name TEXT NOT NULL,
         degreeId INT NOT NULL,
         description TEXT,
-        FOREIGN KEY (degreeId) REFERENCES degrees(id)
+        FOREIGN KEY (degreeId) REFERENCES degrees(id) ON DELETE CASCADE
     );
 
     CREATE TABLE classes (
@@ -26,7 +26,7 @@ db.exec(`
         name TEXT NOT NULL,
         link TEXT NOT NULL,
         courseId INT NOT NULL,
-        FOREIGN KEY (courseId) REFERENCES courses(id)
+        FOREIGN KEY (courseId) REFERENCES courses(id) ON DELETE CASCADE
     );
 
     CREATE TABLE users (
@@ -38,7 +38,7 @@ db.exec(`
         password TEXT,
         degreeId INT,
 		googleId TEXT UNIQUE,
-        FOREIGN KEY (degreeId) REFERENCES degrees(id)
+        FOREIGN KEY (degreeId) REFERENCES degrees(id) ON DELETE CASCADE
     );
 `);
 

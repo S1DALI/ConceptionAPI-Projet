@@ -5,7 +5,11 @@ import { canEditDegree } from "$lib/server/auth";
 import db from "$lib/db";
 
 
-export const GET: RequestHandler = () => {
+export const GET: RequestHandler = ({ locals }) => {
+    const user = locals.user;
+    if(!user) {
+        return new Response("Unauthorized", { status: 401 });
+    }
     const rows = db.prepare("SELECT * FROM degrees").all();
     return new Response(JSON.stringify(rows), { status: 200 });
 };

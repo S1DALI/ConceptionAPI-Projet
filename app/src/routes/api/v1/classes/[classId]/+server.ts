@@ -3,11 +3,15 @@ import { canEditClass } from "$lib/server/auth";
 import db from "$lib/db";
 
 
-export const GET: RequestHandler = ({ params }) => {
+export const GET: RequestHandler = ({ params, locals }) => {
+    const user = locals.user;
     const id = Number(params.classId);
 
     if (isNaN(id)) {
         return new Response("Bad Request", { status: 400 });
+    }
+    if(!user) {
+        return new Response("Unauthorized", { status: 401 });
     }
 
     const statement = db.prepare(`

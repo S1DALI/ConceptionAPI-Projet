@@ -19,12 +19,17 @@ export const GET: RequestHandler = async ({ locals }) => {
     return json(users, { status: 200 });
 };
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
     const data = await request.json();
     const parsed = UserSchema.safeParse(data);
+    const user = locals.user;
 
     if (!parsed.success) {
         return json({ message: "Bad Request" }, { status: 400 });
+    }
+
+    if(!canEditUser(user)) {
+        return json({ message: "Unauthorized" }, { status: 401 });
     }
 
     try {

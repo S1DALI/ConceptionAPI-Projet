@@ -17,6 +17,15 @@ export function canEditClass(user: App.Locals["user"], courseId: number) {
     return false;
 }
 
+export function canViewDegree(user: App.Locals["user"], degreeId: number) {
+    if (!user) return false;
+    if(user.role === 3 || user.role === 2) return true;
+
+    if (user.role === 1 || user.role === 0) {
+        return degreeId === user.degreeId;
+    }
+}
+
 export function canEditDegree(user: App.Locals["user"]) {
     if (!user) return false;
     return user.role === 3;

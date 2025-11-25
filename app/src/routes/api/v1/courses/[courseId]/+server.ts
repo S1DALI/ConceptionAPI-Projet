@@ -1,6 +1,6 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
-import { canEditClass } from "$lib/server/auth";
+import { canEditCourse } from "$lib/server/auth";
 import db from "$lib/db";
 
 
@@ -14,7 +14,7 @@ export async function DELETE({ params, locals }: RequestEvent) {
     const id = Number(params.courseId);
     if (isNaN(id)) return new Response('Bad Request', { status: 400 });
 
-    if (!canEditClass(user, id)) {
+    if (!canEditCourse(user, id)) {
         return new Response("Unauthorized", { status: 401 });
     }
 
