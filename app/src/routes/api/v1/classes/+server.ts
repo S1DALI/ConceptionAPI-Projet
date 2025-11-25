@@ -19,6 +19,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         return new Response("Bad Request", { status: 400 });
     }
 
+    const courseStmt = db.prepare(`
+        SELECT id FROM courses WHERE id = ?
+    `);
+    const course = courseStmt.get(parsed.data.courseId);
+    if (!course) {
+        return new Response("Course not found", { status: 404 });
+    }
+
     if (!canEditClass(user, parsed.data.courseId)) {
         return new Response("Unauthorized", { status: 401 });
     }
@@ -52,6 +60,14 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 
     if (!parsed.success) {
         return new Response("Bad Request", { status: 400 });
+    }
+
+    const courseStmt = db.prepare(`
+        SELECT id FROM courses WHERE id = ?
+    `);
+    const course = courseStmt.get(parsed.data.courseId);
+    if (!course) {
+        return new Response("Course not found", { status: 404 });
     }
 
     if (!canEditClass(user, parsed.data.courseId)) {

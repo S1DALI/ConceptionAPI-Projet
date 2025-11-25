@@ -645,6 +645,8 @@ paths:
           description: Bad Request
         "401":
           description: Unauthorized
+        "404":
+          description: Course not found
     put:
       tags:
         - Class
@@ -685,7 +687,7 @@ paths:
         "401":
           description: Unauthorized
         "404":
-          description: Class not found
+          description: Class or course not found
 
   /v1/classes/{classId}:
     get:
