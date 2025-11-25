@@ -19,11 +19,8 @@ export const UserSchema = z.object({
     degreeId: z.number().int()
 });
 
-export const UserUpdateRoleSchema = z.object({
-    role: z.number().int().min(0).max(3)
-});
-
-export const UserUpdateDegreeSchema = z.object({
+export const UserUpdateSchema = z.object({
+    role: z.number().int().min(0).max(3),
     degreeId: z.number().int()
 });
 

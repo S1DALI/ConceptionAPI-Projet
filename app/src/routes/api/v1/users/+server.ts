@@ -15,7 +15,11 @@ export const GET: RequestHandler = async ({ locals }) => {
         return new Response("Unauthorized", { status: 401 });
     }
 
-    const users = db.prepare("SELECT * FROM users").all();
+    const users = db.prepare(`
+        SELECT users.*, degrees.name as degreeName 
+        FROM users 
+        LEFT JOIN degrees ON users.degreeId = degrees.id
+    `).all();
     return json(users, { status: 200 });
 };
 
