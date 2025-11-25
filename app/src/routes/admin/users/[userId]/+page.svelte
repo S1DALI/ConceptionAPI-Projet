@@ -35,7 +35,7 @@
 				</div>
 			{/if}
 
-			<form method="POST" class="space-y-6">
+			<form method="POST" action="?/patch" class="space-y-6">
 				<!-- Role Selection -->
 				<div>
 					<label for="role" class="block text-sm font-medium text-gray-700">Rôle</label>
@@ -75,6 +75,38 @@
 					</button>
 				</div>
 			</form>
+
+			<div class="mt-8 border-t border-gray-200 pt-6">
+				<div class="flex items-center justify-between">
+					<div>
+						<h3 class="text-lg font-medium text-gray-900">Supprimer l'utilisateur</h3>
+						<p class="mt-1 text-sm text-gray-500">
+							Cette action est irréversible. Toutes les données associées à cet utilisateur seront
+							supprimées.
+						</p>
+					</div>
+					<form
+						action="?/delete"
+						method="POST"
+						on:submit|preventDefault={(e) => {
+							if (
+								confirm(
+									'Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.'
+								)
+							) {
+								e.currentTarget.submit();
+							}
+						}}
+					>
+						<button
+							type="submit"
+							class="rounded-lg bg-red-100 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+						>
+							Supprimer
+						</button>
+					</form>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
