@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } catch (err: any) {
 
         if (err.message.includes("FOREIGN KEY")) {
-            return json({ message: "Invalid degree ID provided" }, { status: 400 });
+            return json({ message: "Bad Request" }, { status: 400 });
         }
 
         if (err.message.includes("UNIQUE")) {

@@ -799,6 +799,8 @@ paths:
                     role: 0
         "400":
           description: Bad Request
+        "409":
+          description: Email already exists
     get:
       tags:
         - User
@@ -830,6 +832,8 @@ paths:
                       email: "anthony.jones@example.com"
                       degreeId: 1
                       role: 0
+        "401":
+          description: Unauthorized
 
   /v1/users/login:
     post:
@@ -919,6 +923,8 @@ paths:
                     role: 0
         "400":
           description: Bad Request
+        "401":
+          description: Unauthorized
         "404":
           description: User not found
     delete:
