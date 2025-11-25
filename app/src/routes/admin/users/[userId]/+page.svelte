@@ -76,6 +76,7 @@
 				</div>
 			</form>
 
+			{#if data.targetUser.role !=3}
 			<div class="mt-8 border-t border-gray-200 pt-6">
 				<div class="flex items-center justify-between">
 					<div>
@@ -107,6 +108,7 @@
 					</form>
 				</div>
 			</div>
+			{/if}
 		</div>
 	</div>
 </div>
