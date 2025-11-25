@@ -12,18 +12,26 @@ export async function POST({ request, locals }: RequestEvent) {
     }
 
     const body = await request.json();
-    const { name, degreeId } = body;
+    const { name, degreeId, description } = body;
 
-    if (!name || !degreeId) throw error(400, 'Bad Request');
+    if (!name || !degreeId || !description) return new Response('Bad Request', { status: 400 });
+
+    const degreeStmt = db.prepare(`
+        SELECT id FROM degrees WHERE id = ?
+    `);
+    const degree = degreeStmt.get(degreeId);
+    if (!degree) {
+        return new Response("Degree not found", { status: 404 });
+    }
 
     if (!canEditCourse(user, degreeId)) {
         return new Response("Unauthorized", { status: 401 });
     }
 
-    const stmt = db.prepare("INSERT INTO courses (name, degreeId) VALUES (?, ?)");
-    const result = stmt.run(name, degreeId);
+    const stmt = db.prepare("INSERT INTO courses (name, degreeId, description) VALUES (?, ?, ?)");
+    const result = stmt.run(name, degreeId, description);
 
-    return json({ id: result.lastInsertRowid, name, degreeId });
+    return json({ id: result.lastInsertRowid, name, degreeId, description });
 }
 
 export async function PUT({ request, locals }: RequestEvent) {
@@ -34,18 +42,26 @@ export async function PUT({ request, locals }: RequestEvent) {
     }
 
     const body = await request.json();
-    const { id, name, degreeId } = body;
+    const { id, name, degreeId, description } = body;
 
-    if (!id || !name || !degreeId) throw error(400, 'Bad Request');
+    if (!id || !name || !degreeId || !description) return new Response('Bad Request', { status: 400 });
+
+    const degreeStmt = db.prepare(`
+        SELECT id FROM degrees WHERE id = ?
+    `);
+    const degree = degreeStmt.get(degreeId);
+    if (!degree) {
+        return new Response("Degree not found", { status: 404 });
+    }
 
     if (!canEditCourse(user, degreeId)) {
         return new Response("Unauthorized", { status: 401 });
     }
 
-    const stmt = db.prepare("UPDATE courses SET name = ?, degreeId = ? WHERE id = ?");
-    const result = stmt.run(name, degreeId, id);
+    const stmt = db.prepare("UPDATE courses SET name = ?, degreeId = ?, description = ? WHERE id = ?");
+    const result = stmt.run(name, degreeId, description, id);
 
-    if (result.changes === 0) throw error(404, 'Course not found');
+    if (result.changes === 0) return new Response("Course not found", { status: 404 });
 
-    return json({ message: "Course updated" });
+    return new Response('Successful update of course', { status: 200 });
 }

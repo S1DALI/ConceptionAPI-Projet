@@ -42,5 +42,5 @@ export const CourseSchema = z.object({
     id: z.number().optional(),
     name: z.string().min(1),
     degreeId: z.number().int(),
-    description: z.string().optional(),
+    description: z.string(),
 });

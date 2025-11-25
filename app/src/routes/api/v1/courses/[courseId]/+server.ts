@@ -12,16 +12,16 @@ export async function DELETE({ params, locals }: RequestEvent) {
     }
 
     const id = Number(params.courseId);
-    if (isNaN(id)) throw error(400, "Bad Request");
+    if (isNaN(id)) return new Response('Bad Request', { status: 400 });
 
     if (!canEditClass(user, id)) {
         return new Response("Unauthorized", { status: 401 });
     }
 
     const course = db.prepare("SELECT id FROM courses WHERE id = ?").get(id);
-    if (!course) throw error(404, "Course not found");
+    if (!course) return new Response("Course not found", { status: 404 });
 
     db.prepare("DELETE FROM courses WHERE id = ?").run(id);
 
-    return json({ message: "Course deleted" });
+    return new Response("Course successfully deleted", { status: 200 });
 }
