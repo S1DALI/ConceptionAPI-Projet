@@ -48,8 +48,8 @@ db.exec(`
 // ------------------------------------------------------
 
 const defaultDegrees = [
-    { name: "Computer Science" },           // id = 1
-    { name: "Business Administration" }     // id = 2
+    { name: "Logiciel et ingénierie des Données" },           // id = 1
+    { name: "Marketing Digital" }     // id = 2
 ];
 
 const insertDegree = db.prepare("INSERT INTO degrees (name) VALUES (?)");
@@ -65,11 +65,8 @@ insertManyDegrees(defaultDegrees);
 
 const defaultCourses = [
     // --- CS (degreeId = 1) ---
-    { name: "Algorithms", degreeId: 1, description: "Introduction to algorithms and complexity." },
-    { name: "Databases", degreeId: 1, description: "SQL, relational design and transactions." },
-
-    // --- Business (degreeId = 2) ---
-    { name: "Marketing Basics", degreeId: 2, description: "Core principles of marketing." },
+    { name: "Conception d'APIs(2025-26)", degreeId: 1, description: "Conception d'api, swagger, user stories.. ." },
+    { name: "Design Patterns", degreeId: 1, description: "Cours de design patterns." }
 ];
 
 const insertCourse = db.prepare(
@@ -87,20 +84,51 @@ insertManyCourses(defaultCourses);
 // ------------------------------------------------------
 
 // On récupère les IDs des cours qu’on vient d’insérer
-const allCourses = db.prepare("SELECT * FROM courses").all();
+// const allCourses = db.prepare("SELECT * FROM courses").all();
 
-const defaultClasses = allCourses.flatMap((course) => [
+const defaultClasses =  [
     {
-        name: `${course.name} - Introduction`,
-        link: "https://example.com/video1",
-        courseId: course.id
+        name: "CM N°1",
+        link: "https://elearning.univ-eiffel.fr/pluginfile.php/1169525/mod_resource/content/1/Contenu%20p%C3%A9dagogique-Concevoir%20des%20API%20-%20CM1%20-%20VFinale.pdf",
+        courseId: 1
     },
     {
-        name: `${course.name} - Advanced`,
-        link: "https://example.com/video2",
-        courseId: course.id
+        name: "CM N°2",
+        link: "https://elearning.univ-eiffel.fr/pluginfile.php/1198698/mod_resource/content/1/Contenu%20p%C3%A9dagogique-Concevoir%20des%20API%20-%20CM2%20-%20VFinale.pdf",
+        courseId: 1
+    },
+    {
+        name: "CM N°3",
+        link: "https://elearning.univ-eiffel.fr/pluginfile.php/1216488/mod_resource/content/1/Contenu%20p%C3%A9dagogique-Concevoir%20des%20API%20-%20CM3%20-%20VFinale.pdf",
+        courseId: 1
+    },
+    {
+        name: "CM N°4",
+        link: "https://elearning.univ-eiffel.fr/pluginfile.php/1227359/mod_resource/content/1/Contenu%20p%C3%A9dagogique-Concevoir%20des%20API%20-%20CM4%20-%20VFinale.pdf",
+        courseId: 1
+    },
+    {
+        name: "Cours : Introduction",
+        link: "https://www-igm.univ-mlv.fr/coursdesignpatterns/slides/introduction.html#/",
+        courseId: 2
+    },
+    {
+        name: "Cours : Rappels POO",
+        link: "https://www-igm.univ-mlv.fr/coursdesignpatterns/slides/encapsulation.html#/",
+        courseId: 2
+    },
+    {
+        name: "TD : Présentation de la première série de TPs : UGE Paint",
+        link: "https://www-igm.univ-mlv.fr/coursdesignpatterns/slides/paint.html#/",
+        courseId: 2
+    },
+    {
+        name: "TD : Application de dessin (1/2)",
+        link: "https://www-igm.univ-mlv.fr/coursdesignpatterns/tds/paint.html",
+        courseId: 2
     }
-]);
+];
+
 
 const insertClass = db.prepare(
     "INSERT INTO classes (name, link, courseId) VALUES (?, ?, ?)"
