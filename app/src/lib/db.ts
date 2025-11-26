@@ -38,7 +38,7 @@ db.exec(`
         password TEXT,
         degreeId INT,
 		googleId TEXT UNIQUE,
-        FOREIGN KEY (degreeId) REFERENCES degrees(id) ON DELETE CASCADE
+        FOREIGN KEY (degreeId) REFERENCES degrees(id) ON DELETE NULL
     );
 `);
 
