@@ -122,7 +122,7 @@ const insertUser = db.prepare(`
     VALUES (?, ?, ?, ?, ?, ?)
 `);
 
-insertUser.run('Admin', 'System', 'admin@univ.fr', 0, 'admin123', 1);
+insertUser.run('Admin', 'System', 'admin@univ.fr', 0, 'admin123', null);
 
 // ------------------------------------------------------
 //   EXPORTS
