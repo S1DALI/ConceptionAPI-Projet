@@ -60,6 +60,7 @@
 						</div>
 						<img
 							src={user.picture}
+							referrerpolicy="no-referrer"
 							alt="Profile"
 							class="h-10 w-10 rounded-full border-2 border-white"
 						/>
