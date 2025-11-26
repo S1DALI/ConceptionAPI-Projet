@@ -968,8 +968,6 @@ paths:
       responses:
         "200":
           description: Successful logout
-        "401":
-          description: Unauthorized
 
   /v1/users/{userId}:
     get:
